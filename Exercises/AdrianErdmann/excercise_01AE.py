@@ -4,7 +4,7 @@
 # single print() which will give the answer(s) to that question.
 
 # what are the quotient and remainder after (integer) division of 2711274328912 by 23369245575
-print(f"integer division result: {2711274328912 // 23369245575} and remainder after integer Division: {2711274328912 % 23369245575}\n")
+print(f"The result of the integer division of 2711274328912 / 23369245575 is: {2711274328912 // 23369245575} and the remainder after the integer devision is: {2711274328912 % 23369245575}\n")
 
 
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
@@ -28,11 +28,4 @@ common_elements = first_list and second_list
 print(f"There are {len(common_elements)} elements common to both lists, with the elements beeing: {", ".join(common_elements)}.\n")
 
 # how often does the character 'a' occur in each of the lists above?
-def num2times(num: int):
-    if num == 1:
-        return "once"
-    elif num == 2:
-        return "twice"
-    return f"{num} times"
-
-print(f"The character a occurs {num2times(str(first_list).count("a"))} in the first and {num2times(str(second_list).count("a"))} in the second list.\n")
+print(f"There are {str(first_list).count("a")} a's in the first and {str(second_list).count("a")} a's in the second list.\n")
