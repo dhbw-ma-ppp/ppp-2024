@@ -6,8 +6,8 @@
 # what are the quotient and remainder after (integer) division of 2711274328912 by 23369245575
 quotient = 2711274328912 // 23369245575
 remainder = 2711274328912 % 23369245575
-print("quotient:", quotient)
-print("remainder:", remainder)
+print("quotient:", quotient, ", remainder:", remainder)
+
 
 
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
@@ -26,8 +26,7 @@ print("There are", difBrackets, "more opened brackets than closed brackets")
 # how may elements are in each of the following lists?
 first_list = ['ybk', 'zcg', 'dhw', 'gua', 'mqh', 'yel', 'fpk', 'imk', 'nkt', 'tpl', 'guc', 'ozk', 'dip', 'thn', 'pxc', 'obk', 'orl', 'rdc', 'vto', 'wen', 'tbw', 'itj', 'qfb', 'ymd', 'txb', 'vgw', 'wgd', 'tcg', 'ezm', 'gnt', 'ehf', 'pfo', 'alf']
 second_list = ['ybk', 'zcg', 'dhw', 'gua', 'mqh', 'yel', 'fpk', 'imk', 'nkt', 'tpl', 'guc', 'ozk', 'dip', 'thn', 'pxc', 'obk', 'orl', 'rdc', 'vto', 'wen', 'tbw', 'itj', 'qfb', 'ymd', 'txb', 'vgw', 'wgd', 'tcg', 'ezm', 'gnt', 'ehf', 'pfo', 'alf']
-print("Elements first list:", len(first_list))
-print("Elements second list:", len(second_list))
+print("Number of Elements in first list:", len(first_list), ", Number of Elements in second list:", len(second_list))
 
 # which and how many elements are common to the two lists above? 
 common_elements = []
@@ -49,5 +48,5 @@ for j in range(len(second_list)):
   if "a" in second_list[j]:
       aInSecondList += 1
 
-print("A in first list:", aInFirstList)
-print("B in second list:", aInSecondList)
+print("Number of As in first list:", aInFirstList, ", Number of As in second list:", aInSecondList)
+
