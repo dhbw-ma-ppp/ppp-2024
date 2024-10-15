@@ -9,7 +9,7 @@ print(f"The result of the integer division of 2711274328912 / 23369245575 is: {2
 
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
 t_fahrenheit = 451
-print(f"{t_fahrenheit}° Fahrenheit is equal to aproximately {((t_fahrenheit - 32) * 5/9):3.5}° Celsius")
+print(f"{t_fahrenheit}° Fahrenheit is equal to aproximately {((t_fahrenheit - 32) * 5/9):3.5}° Celsius\n")
 
 
 # determine how many more '(' than ')' symbols occur in the following string:
