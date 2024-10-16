@@ -6,7 +6,7 @@
 # what are the quotient and remainder after (integer) division of 2711274328912 by 23369245575
 a = 2711274328912
 b = 23369245575
-y = a/b
+y = a//b
 z = a%b
 print(f'The quotient of the division of 2711274328912 by 23369245575 is {y} and the remainder is {z}.')
 
