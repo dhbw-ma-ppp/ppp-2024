@@ -51,12 +51,14 @@ print(Fore.WHITE + f'length of first list: {len(first_list)}')
 print(Fore.WHITE + f'length of second list: {len(second_list)}')
 
 # which and how many elements are common to the two lists above? 
-def get_common_elements_of_List(list1, list2):
+def get_common_elements_of_list_and_amount(list1, list2):
     list1 = set(list1)
     list2 = set(list2)
-    return list1.intersection(list2)
+    intersec = list1.intersection(list2)
+    return intersec, len(intersec)
 
-print(Fore.BLUE + f'the common elements of the lists are: {get_common_elements_of_List(first_list, second_list)}')
+common_elems, common_elems_len = get_common_elements_of_list_and_amount(first_list, second_list)
+print(Fore.BLUE + f'the common elements of the lists are: {common_elems} {common_elems_len}')
 
 # how often does the character 'a' occur in each of the lists above?
 def count_letter_loop(list, letter):
@@ -85,7 +87,7 @@ def test_count_paranthesis_diff():
 def test_get_common_elements_of_List():
     list1 = ["abc","cde","FGE"]
     list2 = ["cde", "abc", "ABC"]
-    assert get_common_elements_of_List(list1,list2) == {"abc","cde"}  
+    assert get_common_elements_of_list_and_amount(list1,list2) == ({"abc","cde"}, 2)  
 
 def test_count_letter_loop():
     test_list = ["abc", "bac", "haha","bde"]
