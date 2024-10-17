@@ -13,7 +13,7 @@ print ("2711274328912 : 23369245575 =", 2711274328912//23369245575, "\n", "Der R
 t_fahrenheit = 451
 # (F − 32) ÷ 1,8 = C Umrechnungsformel Fahrenheit zu Celsius
 t_celsius = (t_fahrenheit - 32) /1.8
-print(f"{t_fahrenheit} Grat Fahrenheit umgerechnet in Clesius sind {t_celsius} Grat Celsius", "\n")
+print(f"{t_fahrenheit} Grad Fahrenheit umgerechnet in Clesius sind {t_celsius} Grad Celsius", "\n")
 
 #Aufgabe 3)
 # determine how many more '(' than ')' symbols occur in the following string:
