@@ -4,13 +4,15 @@
 # single print() which will give the answer(s) to that question.
 
 # what are the quotient and remainder after (integer) division of 2711274328912 by 23369245575
-print('Der Quotient von 2711274328912 dividiert durch 23369245575 ist:' , 2711274328912//23369245575 , 'Und der Rest ist:' , 2711274328912 % 23369245575)
+temp = 2711274328912//23369245575
+print('Der Quotient von 2711274328912 dividiert durch 23369245575 ist:' , temp , 'Und der Rest ist:' , 2711274328912 % 23369245575)
 
 
 
 # assume the variable below is a temperature in degrees Fahrenheit. Print the same temperature converted to °C.
 t_fahrenheit = 451
-print(t_fahrenheit , '°F in Celsius sind:' , ( t_fahrenheit - 32 ) * ( 5 / 9 ) , '°C.')
+fahrenheit_to_celsius = ( t_fahrenheit - 32 ) * ( 5 / 9 )
+print(t_fahrenheit , '°F in Celsius sind:' , fahrenheit_to_celsius , '°C.')
 
 
 
@@ -30,16 +32,16 @@ print('Die Anzahl der Elemente in der ersten Liste sind:' , len(first_list) , 'u
 set_first_list = set(first_list)
 set_second_list = set(second_list)
 set_kombiniert = set_first_list.intersection(set_second_list)
-print('Hier sind alle Elemente aufgelistet, welche in beiden Reihungen vorkommen:'
-       , set_kombiniert ,'insgesamt sind es' ,  len(set_kombiniert) , 'Stück')
+print('Hier sind alle Elemente aufgelistet, welche in beiden Reihungen vorkommen:' ,
+       set_kombiniert ,'insgesamt sind es' ,  len(set_kombiniert) , 'Stück')
 
 # how often does the character 'a' occur in each of the lists above?
-anzahl_a_eins = 0
-anzahl_a_zwei = 0
+number_of_a_in_first_list = 0
+number_of_a_in_second_list = 0
 for x in first_list:
-      anzahl_a_eins += x.count('a')
+      number_of_a_in_first_list += x.count('a')
 
 for x in second_list:
-      anzahl_a_zwei += x.count('a')
+      number_of_a_in_second_list += x.count('a')
       
-print('In der ersten List sind', anzahl_a_eins , 'a´s und in der zweiten sind' , anzahl_a_zwei , 'a´s.')
+print('In der ersten List sind', number_of_a_in_first_list , 'a´s und in der zweiten sind' , number_of_a_in_second_list , 'a´s.')
