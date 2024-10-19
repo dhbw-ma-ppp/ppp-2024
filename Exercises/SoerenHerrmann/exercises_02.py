@@ -95,22 +95,12 @@ def is_float(num):
     except ValueError:
         return False, num
 
-def is_int(num):
-    try:
-        int(num)
-        return True, num
-    except ValueError:
-        return False, num
-
-
 
 def read_and_sort_stringlist(*args):
     number_lst = []
     single_char_lst = []
     for elem in args: 
-        if is_int(elem)[0]:
-            number_lst.append(elem)
-        elif is_float(elem)[0]:
+        if is_float(elem)[0]:
             number_lst.append(elem)
         
         if len(elem) == 1: 
