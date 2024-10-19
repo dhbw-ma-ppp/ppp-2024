@@ -75,7 +75,7 @@ def reader(lst, idx=0):
     return lst[0]
     
     
-print(Fore.GREEN + str(reader(commands)))
+print(Fore.LIGHTGREEN_EX + f'-----\nFinal output of the command: {reader(commands)}\n-----')
 
 
 ###########################################
@@ -104,10 +104,10 @@ def is_int(num):
 
 
 
-def read_and_sort_stringlist(lst):
+def read_and_sort_stringlist(*args):
     number_lst = []
     single_char_lst = []
-    for elem in lst: 
+    for elem in args: 
         if is_int(elem)[0]:
             number_lst.append(elem)
         elif is_float(elem)[0]:
@@ -121,14 +121,10 @@ def read_and_sort_stringlist(lst):
 
 
 def test_read_and_sort_stringlist():
-    list_one = ["a", "b", "a", "d","de"]
-    list_two = ["12", "2", "2", "3","da"]
-    list_three = ["2.2","2.3","2.2","ad"]
-    list_four = list_one + list_two + list_three
-    assert read_and_sort_stringlist(list_one) == ([],["a","b","a","d"])
-    assert read_and_sort_stringlist(list_two) == (["12","2","2","3"],["2","2","3"])
-    assert read_and_sort_stringlist(list_three) == (["2.2","2.3","2.2"],[])
-    assert read_and_sort_stringlist(list_four) == (["12","2","2","3","2.2","2.3","2.2"],["a","b","a","d","2","2","3"])
+    assert read_and_sort_stringlist("a", "b", "a", "d","de") == ([],["a","b","a","d"])
+    assert read_and_sort_stringlist("12", "2", "2", "3","da") == (["12","2","2","3"],["2","2","3"])
+    assert read_and_sort_stringlist("2.2","2.3","2.2","ad") == (["2.2","2.3","2.2"],[])
+    assert read_and_sort_stringlist("a", "b", "a", "d","de","12", "2", "2", "3","da","2.2","2.3","2.2","ad") == (["12","2","2","3","2.2","2.3","2.2"],["a","b","a","d","2","2","3"])
 
 def test_reader():
     assert reader([1, 0, 0, 0, 99]) == 2
