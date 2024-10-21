@@ -77,8 +77,7 @@ print('Die Endzahl ist:',working_list[0])
 # examples and verify that the output for these examples is correct.
 
 
-def sorting(input_list):
-    starting_list = list(input_list)
+def sorting(*starting_list):
     number_list= []
     one_charakter_list = []
     for element in starting_list:
@@ -94,24 +93,19 @@ def sorting(input_list):
     print('Dies ist die Liste alles einstelligen Charakter:' , one_charakter_list)
     print('Es sind' , len(one_charakter_list) , 'Elemente')
 
-           
+test3 = []
 
-test1 = ['Tafel' , '1' , '0' , '15' , 'Baum' , '2.0' , 'g' , 'f' , 'w']
-test2 = ['Hannah' , 'Fabian' , 'Philipp' , 'Linus', '1' , '5' , 'j' , '17']
-test3 = ['1', '2.8' , '/' , '' , 'k/m' , 'Sticker' , 'q' , 'k']
-
-print()
-
+print('Das ist die Testreihe 1: Tafel , 1 , 0 , 15 , Baum , 2.0 , g , f , w')
 print('Test der Testreihe 1. Es sollen folgende Zahlen ausgebenwerden: 1, 0, 15, 2.0. Insgesamt 4 Zahlen')
-print('Es sollen folgende einstellige Charakter ausgeben werden: 1, 0, g, f, w.Insgesamt sind es 5 Zahlen')
-sorting(test1)
-print()
+print('Es sollen folgende einstellige Charakter ausgeben werden: 1, 0, g, f, w. Insgesamt sind es 5 einstellige Charakter')
+sorting('Tafel' , '1' , '0' , '15' , 'Baum' , '2.0' , 'g' , 'f' , 'w')
 
+print('\nDas ist die Testreihe 2: Hannah , Fabian , Philipp , Linus, 1 , 5 , j , 17')
 print('Test der Testreihe 2. Es sollen folgende Zahlen ausgebenwerden: 1, 5, 17. Insgesamt 3 Zahlen')
 print('Es sollen folgende einstellige Charakter ausgeben werden: 1, 5, j. Insgesamt sind es 3 einstellige Charakter')
-sorting(test2)
-print()
+sorting('Hannah' , 'Fabian' , 'Philipp' , 'Linus', '1' , '5' , 'j' , '17')
 
+print('\nDas ist die Testreihe 3: 1, 2.8 , / ,  , k/m , Sticker , q , k')
 print('Test der Testreihe 3. Es sollen folgende Zahlen ausgebenwerden: 1, 2.8. Insgesamt 2 Zahlen')
-print('Es sollen folgende einstellige Charakter ausgeben werden: 1, /, q, k. Insgesamt sind es 3 einstellige Charakter')
-sorting(test3)
+print('Es sollen folgende einstellige Charakter ausgeben werden: 1, /, q, k. Insgesamt sind es 4 einstellige Charakter')
+sorting('1', '2.8' , '/' , '' , 'k/m' , 'Sticker' , 'q' , 'k')
