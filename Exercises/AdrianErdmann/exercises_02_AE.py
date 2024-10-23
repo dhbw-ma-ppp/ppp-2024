@@ -1,3 +1,5 @@
+import re
+
 # Write a function that takes as input a list of integers and returns a single integer number.
 # the numbers passed as argument form the working memory of a simulated computer.
 # this computer will start by looking at the first value in the list passed to the function.
@@ -76,26 +78,44 @@ print(f"The List given in the Task returns {result_commands} after execution of 
 
 def isInterpretableAsNumber(to_test):
     """Takes a String an returns True if the String can be interpretet as a Number\n
-    assuming all whitespaces are unimportant formating (for base 10 numbers) and the number is given in python standart\n
-    (. is the decimal seperator and no , is used as thousand-seperator)\n
-    Means: Float, Complex or BASE-36 (including all bases under BASE-36)"""
+    assuming all spaces are unimportant formating (for base 10 numbers) and , or . are not assigned directly to the thousand seperator,\n
+    they can also be the ten, hundret, ... seperator\n
+    Means: Float, Complex (in base notation a + b * i) or BASE-36 (including all bases under BASE-36)"""
+
+    to_test_no_s = to_test.replace(" ", "")
+
+    # check which notation is used and if the notation is used correctly (no .. or ,, but a number between would be ok -> 1,2.5 for 12.3)
+    if to_test_no_s.count(",") == 1 and not re.search(r"(.)\1+", to_test_no_s):
+        to_test_intformat = to_test_no_s.replace(".", "")
+        to_test_intformat = to_test_intformat.replace(",", ".")
+    elif to_test_no_s.count(".") == 1 and not re.search(r"(,)\1+", to_test_no_s):
+        to_test_intformat = to_test_no_s.replace(",", "")
+    else:
+        to_test_intformat = to_test_no_s
+
+
     try: # test if number can be interpreted as float
-        float(to_test)
+        float(to_test_intformat)
     except ValueError : pass
     else: return True
 
-    if to_test.count("j") == 1: # complex number needs to be as simplified as possible -> a +/- b * c
+    if to_test_no_s.count("j") == 1: # complex number needs to be as simplified as possible -> a +/- b * c
+        to_test_complexformat = to_test_no_s
+    elif to_test_no_s.count("i") == 1:
+        to_test_complexformat = to_test_no_s.replace("i", "j")
+    else: to_test_complexformat = None
+    if to_test_complexformat:
         try: # test if number can be interpreted as complex
-            complex(to_test.replace(" ", ""))
+            complex(to_test_complexformat)
         except ValueError: pass
         else: return True
     
-    try: # test if number can be interpreted is Base-36 or below
+    try: # test if number can be interpreted is Base-36 (including al bases below)
         int(to_test, 36)
     except ValueError: pass
     else: return True
 
-    return False # nothing of the above applies False is returned
+    return False # if nothing of the above applies False is returned
 
 def stringSort(*args):
     """Takes an arbitrary number of unnamed Arguments\n
@@ -117,7 +137,7 @@ testresult1 = stringSort(*testparameters1)
 print(f"From ({", ".join(testparameters1)}) {", ".join(testresult1[0])}; can be interpreted as a number and {", ".join(testresult1[1])} contain only one character.\n")
 
 # second test with fractal numbers, binary, hex, base 36 and complex numbers
-testparameters2 = ("2.78", "2.00", "010001110101", "23A4C6", "3j - 4j + 5", "3j - 4", "34 + 5j", "A56GHU89L")
+testparameters2 = ("5.32.32,78", "345,232.00", "010001110101", "23A4C6", "3j - 4j + 5", "3j - 4", "34 + 5j", "A56GHU89L", "3 - 45i", "23..34.45,345")
 testresult2 = stringSort(*testparameters2)
 print(f"From ({", ".join(testparameters2)}) {", ".join(testresult2[0])}; can be interpreted as a number and {", ".join(testresult2[1])} contain only one character.\n")
 
@@ -125,3 +145,5 @@ print(f"From ({", ".join(testparameters2)}) {", ".join(testresult2[0])}; can be 
 testparameters3 = ("a b c", "1", "a", "  ", "%", "§", "5%3")
 testresult3 = stringSort(*testparameters3)
 print(f"From ({", ".join(testparameters3)}) {", ".join(testresult3[0])}; can be interpreted as a number and {", ".join(testresult3[1])} contain only one character.\n")
+
+print(float("5.32.32,78".replace(".", "").replace(",", ".")))
