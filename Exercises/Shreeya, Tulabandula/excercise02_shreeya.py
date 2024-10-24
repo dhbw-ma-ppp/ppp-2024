@@ -49,6 +49,7 @@ def opcode_number(memory):
         return memory
 
         
+memory = [1, 1, 1, 4, 99, 5, 6, 0, 99]
 print(opcode_number(memory))
 
 
