@@ -1,5 +1,12 @@
 import re
 
+# A function to test if a function returns the wanted value
+def testFunc(func, *args, result_expect = None):
+    result_func = func(*args)
+    if result_func == result_expect:
+        return True
+    return False
+
 # Write a function that takes as input a list of integers and returns a single integer number.
 # the numbers passed as argument form the working memory of a simulated computer.
 # this computer will start by looking at the first value in the list passed to the function.
@@ -27,7 +34,7 @@ import re
 # [1, 1, 1, 4, 99, 5, 6, 0, 99] should become [30, 1, 1, 4, 2, 5, 6, 0, 99]
 # Your function should return 30.
 
-def operation_2(memory, i, func):
+def operation2(memory, i, func):
     """Takes memory and applies func to the numbers at the positions given by i + 1 and i + 2\n
     Writes the result in the cell given at i + 3 and returns the new memory"""
     # execute func on values on position of indices given by cells at i + 1 and i + 2
@@ -43,27 +50,29 @@ def compute(memory):
             match memory[i]:
                 case 1:
                     # executes an operation with 2 parameters (i+1 and i+2) and addition of the 2
-                    operation_2(memory, i, lambda a, b: a + b)
+                    operation2(memory, i, lambda a, b: a + b)
                     # increment i
                     i += 4
                 case 2:
                     # executes an operation with 2 parameters (i+1 and i+2) and multiplication of the 2
-                    operation_2(memory, i, lambda a, b: a * b)
+                    operation2(memory, i, lambda a, b: a * b)
                     # increment i
                     i += 4
-                case _: # catch unknown opcode
-                    pass
+                case _: # catch unknown opcode and return False
+                    break
         
         except IndexError: # to catch if i outranges the length of memory -> memory is not executable
             break
     else: # value should only be returned if memory is executed sucessfully and finishes by opc 99
         return memory[0]
     
-    return None # returns None if memory can not be executed sucessfully (with reaching opc 99)
+    return False # returns False if memory can not be executed sucessfully (with reaching opc 99)
 
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
 result_commands = compute(commands)
+test_result_example = testFunc(compute, [1, 1, 1, 4, 99, 5, 6, 0, 99], result_expect=30)
+print(f"The execution of the example was {"sucesfull" if test_result_example else "a failure"}.")
 print(f"The List given in the Task returns {result_commands} after execution of the procedure.\n")
 
 ###########################################
@@ -132,18 +141,17 @@ def stringSort(*args):
     return first_list, second_list
 
 # first test with all random strings
-testparameters1 = ("abc", "1", "a", "hello", "12", "13", "2635E10", "hello world")
-testresult1 = stringSort(*testparameters1)
-print(f"From ({", ".join(testparameters1)}) {", ".join(testresult1[0])}; can be interpreted as a number and {", ".join(testresult1[1])} contain only one character.\n")
+testparameters = ("abc", "1", "a", "hello", "12", "13", "2635E10", "hello world")
+testresult = testFunc(stringSort, *testparameters, result_expect=(['abc', '1', 'a', 'hello', '12', '13', '2635E10'], ['1', 'a']))
+print(f"For the testparameters: {testparameters} was the test {"sucesfull" if testresult else "a failure"}.")
 
 # second test with fractal numbers, binary, hex, base 36 and complex numbers
-testparameters2 = ("5.32.32,78", "345,232.00", "010001110101", "23A4C6", "3j - 4j + 5", "3j - 4", "34 + 5j", "A56GHU89L", "3 - 45i", "23..34.45,345")
-testresult2 = stringSort(*testparameters2)
-print(f"From ({", ".join(testparameters2)}) {", ".join(testresult2[0])}; can be interpreted as a number and {", ".join(testresult2[1])} contain only one character.\n")
+testparameters = ("5.32.32,78", "345,232.00", "010001110101", "23A4C6", "3j - 4j + 5", "3j - 4", "34 + 5j", "A56GHU89L", "3 - 45i", "23..34.45,345")
+testresult = testFunc(stringSort, *testparameters, result_expect=(['5.32.32,78', '345,232.00', '010001110101', '23A4C6', '34 + 5j', 'A56GHU89L', '3 - 45i'], []))
+print(f"For the testparameters: {testparameters} was the test {"sucesfull" if testresult else "a failure"}.")
 
 # third test with whitespaces and special characters
-testparameters3 = ("a b c", "1", "a", "  ", "%", "§", "5%3")
-testresult3 = stringSort(*testparameters3)
-print(f"From ({", ".join(testparameters3)}) {", ".join(testresult3[0])}; can be interpreted as a number and {", ".join(testresult3[1])} contain only one character.\n")
-
-print(float("5.32.32,78".replace(".", "").replace(",", ".")))
+testparameters = ("a b c", "1", "a", " ", "  ", "%", "§", "5%3")
+testresult = testFunc(stringSort, *testparameters, result_expect=(["1", "a"], ["1", "a", " ", "%", "§"]))
+print(stringSort(*testparameters))
+print(f"For the testparameters: {testparameters} was the test {"sucesfull" if testresult else "a failure"}.")
