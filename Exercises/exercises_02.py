@@ -34,20 +34,17 @@ def simulated_computer(lst):
     while True:
         if lst[opcode] == 1:
             lst[lst[opcode+3]] = lst[lst[opcode+1]] + lst[lst[opcode+2]]
-            opcode += 4
         elif lst[opcode] == 2:
             lst[lst[opcode+3]] = lst[lst[opcode+1]] * lst[lst[opcode+2]]
-            opcode += 4
         elif lst[opcode] == 99:
-            print(f'Program finished. The value at the 0. place of the list is {lst[0]}.') 
+            print(f'\nProgram finished. The value at the 0. place of the list is {lst[0]}.') 
             return lst[0]
         else:
-            print('No opcode is defined for the current numerical value. Program aborted.')
+            print('\nNo opcode is defined for the current numerical value. Program aborted.')
             return None
+        opcode += 4
 
-print()
-simulated_computer(commands)
-print()
+print(simulated_computer(commands), '\n')
   
 
 ###########################################
@@ -74,11 +71,9 @@ def sortingLists(*args):
         except ValueError:
             pass
     print(f'The list of all strings which contain just one character is the following: {listOfCharacters}')
-    print(f'The list of all strings which can be interpreted as a number is the following: {listOfNumbers}')
+    print(f'The list of all strings which can be interpreted as a number is the following: {listOfNumbers}\n')
 
 
 test1 = sortingLists("1", "ab", "3", "14", "ki", "2.0")
-print()
 test2 = sortingLists("Lara", "Hallo", "27.743", "4", "q")
-print()
 test3 = sortingLists("abcde", "Python", "99999", "o", "4", "9.99999", "-8.929807317", "b", "0")
