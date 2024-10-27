@@ -95,6 +95,3 @@ def validnumbers(lower_bound, upper_bound):
 
 validnumbers(134564, 585159)
 # The resulting count is a total of 1306 valid numbers.
-
-        
-
