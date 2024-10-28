@@ -27,29 +27,28 @@
 
 def process_memory(memory):
     pos = 0
+
     while True:
         opcode = memory[pos]
-        
+
         if opcode == 99:
             # Opcode 99: halting
             break
-        elif opcode == 1:
-            # Opcode 1: addition
+        elif opcode == 1 or opcode == 2:
             value1 = memory[memory[pos + 1]]
             value2 = memory[memory[pos + 2]]
-            memory[memory[pos + 3]] = value1 + value2
-        elif opcode == 2:
-            # Opcode 2: multiplication
-            value1 = memory[memory[pos + 1]]
-            value2 = memory[memory[pos + 2]]
-            memory[memory[pos + 3]] = value1 * value2
+            result_position = memory[pos + 3]
+            
+            # Perform addition if opcode is 1, or multiplication if opcode is 2
+            memory[result_position] = value1 + value2 if opcode == 1 else value1 * value2
         else:
             raise ValueError(f"Unexpected opcode {opcode} at position {pos}")
-
-        # Moving to the next set of instructions (4 positions forward)
+            
         pos += 4
 
     return memory[0]
+
+
 
 # printing out which value is returned by your function for the following list:
 
