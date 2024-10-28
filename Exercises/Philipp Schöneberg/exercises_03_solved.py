@@ -70,9 +70,16 @@ for elem in skat_deck_0:
 # in your pull request, please.
 
 def NumberAcceptor(lower_bound, upper_bound):
+    """
+    This function takes a lower and upper bound as parametersd and returns every number which fullfills the following criteria:
+
+    - they are within the (left-inclusive and right-exclusive) bounds passed to the function
+    - there is at least one group of exactly two adjacent digits within the number which are the same
+    - digits only increase going from left to right
+    """
     accepted_number_counter = 0
     accepted_numbers = []
-    for testing_number in range(lower_bound, upper_bound+1):
+    for testing_number in range(lower_bound, upper_bound):
         testing_number_string = str(testing_number)
         connected_equal_chars_counter = 1
         for i in range(len(testing_number_string)-1):
@@ -88,6 +95,14 @@ def NumberAcceptor(lower_bound, upper_bound):
                 connected_equal_chars_counter += 1
             else:
                 connected_equal_chars_counter = 1
+        else:
+            if connected_equal_chars_counter == 2:
+                for j in range(len(testing_number_string)-1):
+                    if int(testing_number_string[j]) > int(testing_number_string[j+1]):
+                        break
+                else:
+                    accepted_number_counter += 1
+                    accepted_numbers.append(testing_number)
     print(accepted_numbers)
     print(accepted_number_counter)
     return accepted_number_counter
