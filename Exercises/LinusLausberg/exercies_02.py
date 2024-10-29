@@ -96,7 +96,6 @@ def sorting(*starting_list):
     print('Dies ist die Liste alles einstelligen Charakter:' , one_charakter_list)
     print('Es sind' , len(one_charakter_list) , 'Elemente')
 
-test3 = []
 
 print('Das ist die Testreihe 1: Tafel , 1 , 0 , 15 , Baum , 2.0 , g , f , w')
 print('Test der Testreihe 1. Es sollen folgende Zahlen ausgebenwerden: 1, 0, 15, 2.0. Insgesamt 4 Zahlen')
