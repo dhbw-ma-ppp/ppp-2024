@@ -69,8 +69,6 @@ class SkatCardDeck(FrenchCardDeck):
         self.all_syms = ["diamonds", "hearts", "spades", "clubs"]
         self.all_nums = ["7", "8", "9", "10", "J", "Q", "K", "A"]
         self.deck = self.make_Deck(self.all_syms, self.all_nums)
-  
-skat = SkatCardDeck()
 
 test_code(SkatCardDeck())
 
