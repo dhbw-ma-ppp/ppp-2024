@@ -11,38 +11,48 @@ class Card:
     def __init__(self , color , number):
         self.color = color
         self.number = number
+    
+    def __str__(self):
+        return f'{self.color} / { self.number}'
+
     def get_color(self):
         return self.color
+    
     def get_number(self):
         return self.number
 
 
 class DeckOfCards:
-    def __init__(self, use = 'normal'):
+    def __init__(self):
         posible_colors = ['diamonds' , 'hearts' , 'spades' , 'cludes']
         self.deck = []
         for color_on_card in posible_colors:
             for number_preview in range(2, 15): #hier umsetellen wenn zwei ace erwünscht sind
                 number_on_card = str
-                if(use == 'Skart' and number_preview <= 6):
-                    continue
-                else:
-                    match number_preview:
-                        case 11:
-                            number_on_card = 'Bube'
-                        case 12:
-                            number_on_card = 'Dame'
-                        case 13:
-                            number_on_card = 'Koenig'
-                        case 14:
-                            number_on_card = 'Ace'
-                        case _:
-                            number_on_card = str(number_preview)
-                    new_Card = Card(color_on_card , number_on_card)
-                    self.deck.append(new_Card)
+                match number_preview:
+                    case 11:
+                        number_on_card = 'Bube'
+                    case 12:
+                        number_on_card = 'Dame'
+                    case 13:
+                        number_on_card = 'Koenig'
+                    case 14:
+                        number_on_card = 'Ace'
+                    case _:
+                        number_on_card = str(number_preview)
+                new_Card = Card(color_on_card , number_on_card)
+                self.deck.append(new_Card)
 
-    def get_card(self, index):
+    def __getitem__(self, index):
         return self.deck[index]
+    
+    def __iter__(self):
+        return (i for i in self.deck)
+    
+    def __str__(self):
+        for element in self.deck:
+            print(element.color , ' / ', element.number)
+        return ''
     
     def search(self, color, number):
         found = False
@@ -56,32 +66,45 @@ class DeckOfCards:
             else:
                 counter += 1
         return counter
-    def output_deck(self):
-        for element in self.deck:
-            print(element.color , ' / ', element.number)
 
 
 dc = DeckOfCards()
-
-
-
 
 
 # PART 2:
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
 
+class DeckOfSkartCards(DeckOfCards):
+    def __init__(self):
+        posible_colors = ['diamonds' , 'hearts' , 'spades' , 'cludes']
+        self.deck = []
+        for color_on_card in posible_colors:
+            for number_preview in range(7, 15): #hier umsetellen wenn zwei ace erwünscht sind
+                number_on_card = str
+                match number_preview:
+                    case 11:
+                        number_on_card = 'Bube'
+                    case 12:
+                        number_on_card = 'Dame'
+                    case 13:
+                        number_on_card = 'Koenig'
+                    case 14:
+                        number_on_card = 'Ace'
+                    case _:
+                        number_on_card = str(number_preview)
+                new_Card = Card(color_on_card , number_on_card)
+                self.deck.append(new_Card)
 
-#In the Deckcards Class is a case distinction for using the skart-deck. I hope this version is fine
-sdc = DeckOfCards('Skart')
+
+sdc = DeckOfSkartCards()
 
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
-
 print('Hier wird das Kartendeck ausgeben:\n')
-dc.output_deck()
+print(dc)
 print('\nHier wird das Skart-Kartendeck ausgeben:\n')
-sdc.output_deck()
+print(sdc)
 
 #testing search on the normal deck
 def test_search():
@@ -93,15 +116,24 @@ def test_search():
     assert sdc.search('spades' , '9') == 18
 print('positiv testing of test_search() on the skart-deck\n')
 
-#testing get_color and get_card on the normal deck
+#testing get_color on the normal deck
 def test_get_color():
-    assert dc.get_card(5).get_color() == 'diamond'
+    assert dc[5].get_color() == 'diamond'
 print('positiv testing of get_color() and get_card() on the normal deck\n')
 
-#testing get_number and get_card on the normal deck
-def test_get_color():
-    assert sdc.get_card(9).get_number() == 8
+#testing get_number on the skart deck
+def test_get_number():
+    assert sdc[9].get_number() == 8
 print('positiv testing of get_number() and get_card() on the skart-deck\n')
+
+#testing output of a card from the normal deck
+def test___str__():
+    assert sdc[9] == 'hearts  /  8'
+print('testing output of a card from the normal deck\n')
+
+
+print(dc[0])
+print(sdc[0])
 
 
 # PART 3:
