@@ -128,17 +128,13 @@ def test_get_number():
 
 #testing output of a card from the normal deck
 def test___str__():
-    assert sdc[9] == f'hearts / 8'
+    assert str(sdc[9]) == 'hearts / 8'
     print('positiv testing of an card output from the normal deck\n')
 
 test_search()
 test_get_color()
 test_get_color()
-print(sdc[9])
 test___str__()
-
-print(dc[0])
-print(sdc[0])
 
 
 # PART 3:
@@ -183,5 +179,5 @@ def investigation(lower_bound, upper_bound):
                 counter += 1
     return counter
 
-print(investigation(134564 , 585159))
-#Output: 1306
+print('Es wurden',investigation(134564 , 585159),'Zahlen gefunden, welche den Kriterien entsprechen.')
+#Output: Es wurden 1306 Zahlen gefunden, welche den Kriterien entsprechen.
