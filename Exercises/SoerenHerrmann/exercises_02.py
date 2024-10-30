@@ -1,3 +1,4 @@
+from colorama import Fore
 # Write a function that takes as input a list of integers and returns a single integer number.
 # the numbers passed as argument form the working memory of a simulated computer.
 # this computer will start by looking at the first value in the list passed to the function.
@@ -29,6 +30,53 @@
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
 
+def addition(lst, idx):
+    idx +=1
+    operator_one = lst[lst[idx]]
+    idx +=1
+    operator_two = lst[lst[idx]]
+    idx +=1 
+    sum = operator_one + operator_two
+    lst[lst[idx]] = sum
+    return lst, idx
+
+def multiplication(lst, idx):
+    idx +=1
+    operator_one = lst[lst[idx]]
+    idx +=1
+    operator_two = lst[lst[idx]]
+    idx +=1 
+    product = operator_one * operator_two
+    lst[lst[idx]] = product
+    return lst, idx
+
+def reader(lst, idx=0):
+    while idx < len(lst):
+        print(f'current index {idx}')
+        match lst[idx]:
+            case 1:
+                # user addition
+                print(Fore.CYAN + "starting addition")
+                lst, idx = addition(lst,idx)
+            case 2: 
+                # user multiplication
+                print(Fore.BLUE + "starting multiplication")
+                lst, idx = multiplication(lst, idx)
+            case 99:
+                # user break
+                print(Fore.GREEN + "Operation canceled by user")
+                break
+            case _:
+                print(Fore.RED + "Error ID10T")
+                print(lst[idx])
+                print(idx)
+                break
+        idx +=1 
+    return lst[0]
+    
+    
+print(Fore.LIGHTGREEN_EX + f'-----\nFinal output of the command: {reader(commands)}\n-----')
+
 
 ###########################################
 # Write a function that takes an arbitrary number of unnamed arguments
@@ -39,3 +87,37 @@ commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 
 #   The second list should contain all strings which contain just one character.
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
+
+def is_float(num):
+    try:
+        float(num)
+        return True, num
+    except ValueError:
+        return False, num
+
+
+def read_and_sort_stringlist(*args):
+    number_lst = []
+    single_char_lst = []
+    for elem in args: 
+        if is_float(elem)[0]:
+            number_lst.append(elem)
+        
+        if len(elem) == 1: 
+            single_char_lst.append(elem)
+    
+    return number_lst, single_char_lst
+
+
+
+def test_read_and_sort_stringlist():
+    assert read_and_sort_stringlist("a", "b", "a", "d","de") == ([],["a","b","a","d"])
+    assert read_and_sort_stringlist("12", "2", "2", "3","da") == (["12","2","2","3"],["2","2","3"])
+    assert read_and_sort_stringlist("2.2","2.3","2.2","ad") == (["2.2","2.3","2.2"],[])
+    assert read_and_sort_stringlist("a", "b", "a", "d","de","12", "2", "2", "3","da","2.2","2.3","2.2","ad") == (["12","2","2","3","2.2","2.3","2.2"],["a","b","a","d","2","2","3"])
+
+def test_reader():
+    assert reader([1, 0, 0, 0, 99]) == 2
+    assert reader([2, 0, 0, 0, 99]) == 4
+    assert reader([1, 1, 1, 4, 99, 5, 6, 0, 99])==30
+    assert reader([99]) == 99
