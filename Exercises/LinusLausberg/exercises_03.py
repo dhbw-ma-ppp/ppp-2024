@@ -24,7 +24,7 @@ class Card:
 
 class DeckOfCards:
     def __init__(self):
-        posible_colors = ['diamonds' , 'hearts' , 'spades' , 'cludes']
+        posible_colors = ['diamonds' , 'hearts' , 'spades' , 'cluds']
         self.deck = []
         for color_on_card in posible_colors:
             for number_preview in range(2, 15): #hier umsetellen wenn zwei ace erwünscht sind
@@ -60,7 +60,7 @@ class DeckOfCards:
         while(found == False):
             if(counter >= len(self.deck)):
                 print('Card not found!')
-            card = self.get_card(counter)
+            card = self[counter]
             if(card.get_color() == color and card.get_number() == number):
                 found = True
             else:
@@ -109,28 +109,33 @@ print(sdc)
 #testing search on the normal deck
 def test_search():
     assert dc.search('cludes' , 'Dame') == 49
-print('\npositiv testing of test_search() on the normal deck\n')
+    print('\npositiv testing of test_search() on the normal deck\n')
 
 #testing search on the skart deck
 def test_search():
     assert sdc.search('spades' , '9') == 18
-print('positiv testing of test_search() on the skart-deck\n')
+    print('positiv testing of test_search() on the skart-deck\n')
 
 #testing get_color on the normal deck
 def test_get_color():
-    assert dc[5].get_color() == 'diamond'
-print('positiv testing of get_color() and get_card() on the normal deck\n')
+    assert dc[5].get_color() == 'diamonds'
+    print('positiv testing of get_color() and get_card() on the normal deck\n')
 
 #testing get_number on the skart deck
 def test_get_number():
     assert sdc[9].get_number() == 8
-print('positiv testing of get_number() and get_card() on the skart-deck\n')
+    print('positiv testing of get_number() and get_card() on the skart-deck\n')
 
 #testing output of a card from the normal deck
 def test___str__():
-    assert sdc[9] == 'hearts  /  8'
-print('testing output of a card from the normal deck\n')
+    assert sdc[9] == f'hearts / 8'
+    print('positiv testing of an card output from the normal deck\n')
 
+test_search()
+test_get_color()
+test_get_color()
+print(sdc[9])
+test___str__()
 
 print(dc[0])
 print(sdc[0])
