@@ -15,7 +15,7 @@
 # of your working memory.
 
 # As an example, if the list of integers passed to your function is 
-# [1, 0, 0, 0, 99] the 1 in the first position indicates you should read the values
+# [1,   0, 0, 0, 99] the 1 in the first position indicates you should read the values
 # at position given by the second and third entries. Both of these indicate position 0, so you should read the value
 # at position 0 twice. That value is 1. Adding 1 and 1 gives you two. You then look at the value in the fourth
 # position, which is again 0, so you write the result to position 0. You then step forward by 4 steps, arriving at 99
@@ -28,7 +28,32 @@
 
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
+    
+list = [1, 1, 1, 4, 99, 5, 6, 0, 99]
 
+def find_number(list):
+    i=0 
+    while list[i]==1 or list[i]==2 or list[i]==99:
+        if list[i]==1:
+            x = list[list[i+1]]
+            y = list[list[i+2]]
+            result = x+y
+            z = list[3 + i]
+            list[z] = result
+            i+=4
+        elif list[i] == 2:
+            x = list[list[i+1]]
+            y = list[list[i+2]]
+            result = x*y
+            z = list[3 + i]
+            list[z] = result
+            i+=4
+        elif list[i] == 99:
+            break
+    
+    print(list[0])
+
+find_number(commands)
 
 ###########################################
 # Write a function that takes an arbitrary number of unnamed arguments
@@ -39,3 +64,25 @@ commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 
 #   The second list should contain all strings which contain just one character.
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
+
+list1 = ["hello", "k", "5", "tree", "9", "world", "j"]
+list2 = ["p", "three", "8", "value", "i", "j","3.5"]
+list3 = ["4", "?", ".", "list", "x", "welcome", "u"]
+
+def sort(list):
+    list_numbers = []
+    list_character = []
+    for listItem in list:
+        try:
+            number = float(listItem)
+            list_numbers.append(number)
+        except ValueError:
+            if len(listItem) == 1:
+                 list_character.append(listItem)
+        
+    print(list_numbers)
+    print(list_character)
+
+sort(list1)
+sort(list2)
+sort(list3)
