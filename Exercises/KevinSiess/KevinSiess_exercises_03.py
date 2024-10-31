@@ -7,7 +7,7 @@
 # Printing a cards string representation should give me a nice, 
 # readable description of that card.
 
-def readcards(deck):
+def read_cards(deck):
     print(f"Decktype: {type(deck).__name__}")  # Print the name of the class
     print(f"Decklength: {len(deck)}")          # Length of deck
     print(f"First Card: {deck[0]}")            # First card
@@ -28,7 +28,7 @@ class Card:
 
 # Frenchdeck
 class Frenchdeck:
-    ranks = [str(n) for n in range(2, 11)] + ["Jack", "Queen", "King", "Ace", "Ace"]
+    ranks = [str(n) for n in range(2, 11)] + ["Jack", "Queen", "King", "Ace"]
     suits = ["Diamonds", "Hearts", "Spades", "Clubs"]
     
     def __init__(self):
@@ -41,40 +41,31 @@ class Frenchdeck:
         return self._cards[position]
 
 # Skatdeck
-class Skatdeck:
+class Skatdeck(Frenchdeck):
     ranks = [str(n) for n in range(7, 11)] + ["Jack", "Queen", "King", "Ace"]
     suits = ["Diamonds", "Hearts", "Spades", "Clubs"]
-    
-    def __init__(self):
-        self._cards = [Card(rank, suit) for suit in self.suits for rank in self.ranks]
-
-    def __len__(self):
-        return len(self._cards)
-
-    def __getitem__(self, position):
-        return self._cards[position]
 
 # Instantiate and test Frenchdeck
-print("Testing Frenchdeck:")
+print(f"Testing Frenchdeck:")
 french_deck = Frenchdeck()
-readcards(french_deck)
+read_cards(french_deck)
 
 # Assertions for Frenchdeck
-assert len(french_deck) == 56, "Frenchdeck should have 56 cards"
+assert len(french_deck) == 52, "Frenchdeck should have 52 cards"
 assert french_deck[0].__repr__() == "2 of Diamonds", "The first card should be '2 of Diamonds'"
 assert french_deck[-1].__repr__() == "Ace of Clubs", "The last card should be 'Ace of Clubs'"
 
 # Instantiate and test Skatdeck
-print("\nTesting Skatdeck:")
+print(f"\nTesting Skatdeck:")
 skat_deck = Skatdeck()
-readcards(skat_deck)
+read_cards(skat_deck)
 
 # Assertions for Skatdeck
 assert len(skat_deck) == 32, "Skatdeck should have 32 cards"
 assert skat_deck[0].__repr__() == "7 of Diamonds", "The first card should be '7 of Diamonds'"
 assert skat_deck[-1].__repr__() == "Ace of Clubs", "The last card should be 'Ace of Clubs'"
 
-print("\nAll tests were sucessful!")
+print(f"\nAll tests were sucessful!")
 
 
 # PART 3:
@@ -96,7 +87,7 @@ print("\nAll tests were sucessful!")
 
 def count_valid_numbers(lower, upper):
     # check for digit_twins
-    def has_exactly_two_adjacent_matching_digits(number):
+    def digit_twins(number):
         number_str = str(number)
         count = 1  
         for i in range(1, len(number_str)):
@@ -107,17 +98,23 @@ def count_valid_numbers(lower, upper):
                     return True
                 count = 1  
         return count == 2 
+    
     #check if digits increase from left to right
     def digits_increase(number):
         number_str = str(number)
+
+        if sorted(number_str) != list(number_str):
+            return False
+        
         for i in range(1, len(number_str)):
             if number_str[i] < number_str[i - 1]:
                 return False
         return True
 
+
     valid_count = 0
     for number in range(lower, upper):
-        if has_exactly_two_adjacent_matching_digits(number) and digits_increase(number):
+        if digit_twins(number) and digits_increase(number):
             valid_count += 1
 
     return valid_count
@@ -126,5 +123,5 @@ def count_valid_numbers(lower, upper):
 lower_bound = 134564
 upper_bound = 585159
 result = count_valid_numbers(lower_bound, upper_bound)
-print("Count of valid numbers:", result)
+print(f"Count of valid numbers: {result}")
 
