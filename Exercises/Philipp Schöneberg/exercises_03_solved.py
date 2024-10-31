@@ -40,16 +40,27 @@ class SkatDeckOfCards(FrenchDeckOfCards):
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
-french_deck_0 = FrenchDeckOfCards()
-skat_deck_0 = SkatDeckOfCards()
 
-print(french_deck_0)
-for elem in french_deck_0:
-    print(elem)
+def test_FrenchDeckOfCards():
+    french_deck = FrenchDeckOfCards()
+    assert french_deck[0] == ('diamonds', '2')
+    assert french_deck[13] == ('hearts', '2')
+    assert french_deck[26] == ('spades', '2')
+    assert french_deck[39] == ('clubs', '2')
+    print("The test of the class FrenchDeckOfCards was succesful!")
 
-print(skat_deck_0)
-for elem in skat_deck_0:
-    print(elem)
+
+def test_SkatDeckOfCards():
+    skat_deck = SkatDeckOfCards()
+    assert skat_deck[0] == ('diamonds', '7')
+    assert skat_deck[8] == ('hearts', '7')
+    assert skat_deck[16] == ('spades', '7')
+    assert skat_deck[24] == ('clubs', '7')
+    print("The test of the class SkatDeckOfCards was succesful!")
+
+
+test_FrenchDeckOfCards()
+test_SkatDeckOfCards()
 
 
 # PART 3:
@@ -83,7 +94,7 @@ def NumberAcceptor(lower_bound, upper_bound):
         testing_number_string = str(testing_number)
         connected_equal_chars_counter = 1
         for i in range(len(testing_number_string)-1):
-            if connected_equal_chars_counter == 2 and testing_number_string[i] != testing_number_string[i+1]:
+            if (connected_equal_chars_counter == 2 and testing_number_string[i] != testing_number_string[i+1]) or (connected_equal_chars_counter == 1 and i == len(testing_number_string)-2 and testing_number_string[i] == testing_number_string[i+1]):
                 for j in range(len(testing_number_string)-1):
                     if int(testing_number_string[j]) > int(testing_number_string[j+1]):
                         break
@@ -95,17 +106,17 @@ def NumberAcceptor(lower_bound, upper_bound):
                 connected_equal_chars_counter += 1
             else:
                 connected_equal_chars_counter = 1
-        else:
-            if connected_equal_chars_counter == 2:
-                for j in range(len(testing_number_string)-1):
-                    if int(testing_number_string[j]) > int(testing_number_string[j+1]):
-                        break
-                else:
-                    accepted_number_counter += 1
-                    accepted_numbers.append(testing_number)
-    print(accepted_numbers)
-    print(accepted_number_counter)
     return accepted_number_counter
 
 
-NumberAcceptor(134564, 585159)
+def test_NumberAcceptor():
+    assert NumberAcceptor(123345, 123346) == 1
+    assert NumberAcceptor(123341, 123342) == 0
+    assert NumberAcceptor(123334, 123335) == 0
+    assert NumberAcceptor(111334, 111335) == 1
+    assert NumberAcceptor(112233, 112234) == 1
+    print("The test of the function NumberAcceptor was succesful!")
+
+
+test_NumberAcceptor()
+print(NumberAcceptor(134564, 585159))
