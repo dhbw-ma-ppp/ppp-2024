@@ -70,10 +70,10 @@ def test_deck(deck, expected_length, first_card, last_card, deck_name):
 
     # Test indexing
     assert str(deck[0]) == first_card, f"First card should be {first_card}"
-    print(first_card)
+    #print(first_card)
     assert str(deck[-1]) == last_card, f"Last card should be {last_card}"
-    print(last_card)
-    print('\n')
+    #print(last_card)
+    #print('\n')
 
     # Test iteration
     card_list = list(deck)
