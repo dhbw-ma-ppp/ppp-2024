@@ -8,12 +8,12 @@
 # readable description of that card.
 
 class Card:
-    def __init__(self , color , number):
+    def __init__( self, color , number):
         self.color = color
         self.number = number
     
     def __str__(self):
-        return f'{self.color} / { self.number}'
+        return f'{self.color} / {self.number}'
 
     def get_color(self):
         return self.color
@@ -24,18 +24,18 @@ class Card:
 
 class DeckOfCards:
     def __init__(self):
-        posible_colors = ['diamonds' , 'hearts' , 'spades' , 'cluds']
+        posible_colors = ['diamonds' , 'hearts' , 'spades' , 'clubs']
         self.deck = []
         for color_on_card in posible_colors:
-            for number_preview in range(2, 15): #hier umsetellen wenn zwei ace erwünscht sind
+            for number_preview in range(2, 15): 
                 number_on_card = str
                 match number_preview:
                     case 11:
-                        number_on_card = 'Bube'
+                        number_on_card = 'Jack'
                     case 12:
-                        number_on_card = 'Dame'
+                        number_on_card = 'Queen'
                     case 13:
-                        number_on_card = 'Koenig'
+                        number_on_card = 'King'
                     case 14:
                         number_on_card = 'Ace'
                     case _:
