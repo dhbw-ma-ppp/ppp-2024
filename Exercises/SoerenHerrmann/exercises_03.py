@@ -45,26 +45,7 @@ class SkatDeck(FrenchDeck):
 
     
 
-# Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
-def test_skat():
-    deck = SkatDeck()
-    skat_ranks = RANKS = ['7', '8', '9', '10', 'J', 'Q', 'K', 'A']
-    card_list = [Card(rank, suit) for suit in Card.SUITS for rank in skat_ranks]
-    assert str(deck[0]) == '7 of Diamonds'
-    assert str(deck[-1]) == 'A of Clubs'
-    assert len(deck) == 32
-    for elem in deck: 
-        assert str(elem) in [str(card) for card in card_list]
-
-def test_french():
-    deck = FrenchDeck()
-    card_list = [Card(rank, suit) for suit in Card.SUITS for rank in Card.RANKS]
-    assert str(deck[0]) == '2 of Diamonds'
-    assert str(deck[-1]) == 'A of Clubs'
-    assert len(deck) == 52
-    for elem in deck: 
-        assert str(elem) in [str(card) for card in card_list]
 
 
 
@@ -86,9 +67,17 @@ def test_french():
 # in your pull request, please.
 
 def validate_number_range(low, high):
+    """
+    This function accepts a lower and upper bound number. The number returns the count of numbers that meet the following criteria:
+    - they are within the (left-inclusive and right-exclusive) bounds passed to the function
+    - there is at least one group of exactly two adjacent digits within the number which are the same (like 33 in 123345)
+    - digits only increase going from left to right
+ 
+    The following function is implemented using a dictionary.
+    """
     count = 0
     
-    for number in range(low, high+1):
+    for number in range(low, high):
         number_dict = {}
         num_str = str(number)
         has_exact_pair = False
@@ -115,3 +104,38 @@ def validate_number_range(low, high):
     return count
 
 print(validate_number_range(134564, 585159))
+
+
+def test_validate_numbers():
+    assert validate_number_range(134564, 585159) == 1306, "Function produces the wrong output"
+
+
+# Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
+
+
+def deck_test(deckType):
+    match deckType:
+        case "skat":
+            deck = SkatDeck()
+            assert str(deck[0]) == '7 of Diamonds'
+            assert str(deck[-1]) == 'A of Clubs'
+            assert len(deck) == 32
+            skat_ranks = RANKS = ['7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+            card_list = [Card(rank, suit) for suit in Card.SUITS for rank in skat_ranks]
+            for elem in deck: 
+                assert str(elem) in [str(card) for card in card_list]
+        case "french":
+            deck = FrenchDeck()
+            card_list = [Card(rank, suit) for suit in Card.SUITS for rank in Card.RANKS]
+            assert str(deck[0]) == '2 of Diamonds'
+            assert str(deck[-1]) == 'A of Clubs'
+            assert len(deck) == 52
+            for elem in deck: 
+                assert str(elem) in [str(card) for card in card_list]
+
+def test_skat():
+    deck_test("skat")
+    
+
+def test_french():
+    deck_test("french")
