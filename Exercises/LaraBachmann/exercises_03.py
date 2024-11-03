@@ -69,7 +69,7 @@ def validnumbers(lower_bound, upper_bound):
     valid_numbers = []
     valid_counter = 0
 
-    for number in range(lower_bound, upper_bound + 1):
+    for number in range(lower_bound, upper_bound):
         number_str = str(number)
         is_valid = True
         has_pair = False
