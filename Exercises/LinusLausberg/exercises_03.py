@@ -80,7 +80,7 @@ class DeckOfSkartCards(DeckOfCards):
         posible_colors = ['diamonds' , 'hearts' , 'spades' , 'cludes']
         self.deck = []
         for color_on_card in posible_colors:
-            for number_preview in range(7, 15): #hier umsetellen wenn zwei ace erwünscht sind
+            for number_preview in range(7, 15):
                 number_on_card = str
                 match number_preview:
                     case 11:
