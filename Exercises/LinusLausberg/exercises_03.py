@@ -84,11 +84,11 @@ class DeckOfSkartCards(DeckOfCards):
                 number_on_card = str
                 match number_preview:
                     case 11:
-                        number_on_card = 'Bube'
+                        number_on_card = 'Jack'
                     case 12:
-                        number_on_card = 'Dame'
+                        number_on_card = 'Queen'
                     case 13:
-                        number_on_card = 'Koenig'
+                        number_on_card = 'King'
                     case 14:
                         number_on_card = 'Ace'
                     case _:
