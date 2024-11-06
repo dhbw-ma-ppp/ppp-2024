@@ -120,7 +120,7 @@ def inputs(start_i):
     return start_i + 2
 
 def output(start_o):
-    print(working_list[start_o+1])
+    print('Output wegen Opcode 4:',working_list[working_list[start_o+1]])
     return start_o + 2
 
 def jump_if_true(start_t, instruction):
@@ -139,28 +139,26 @@ def less_than(start_l, instruction):
     if modes(start_l, 1, instruction) < modes(start_l, 2, instruction):
         working_list[working_list[start_l+3]] = 1
     else:
-        working_list[start_l+3] = 0
+        working_list[working_list[start_l+3]] = 0
     return start_l + 4
 
 def equals(start_e, instructions):
     if modes(start_e, 1, instructions) == modes(start_e, 2, instructions):
-        working_list[start_e+3] = 1
+        working_list[working_list[start_e+3]] = 1
     else:
-        working_list[start_e+3] = 0
+        working_list[working_list[start_e+3]] = 0
     return start_e + 4
  
 
 def execute():
     end = False
     position = 0 
-    counter = 0
     while end == False:
         position, end = investigation(position)
-        counter += 1
     print('Die Endzahl ist:',working_list[0])
 
 
 working_list = commands
 execute()
-#Ausgabe durch Opcode 4: 223
+#Ausgabe durch Opcode 4: 16694270
 #Ausgabe durch Opcode 99: 314
