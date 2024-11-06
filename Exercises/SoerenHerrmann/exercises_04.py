@@ -100,6 +100,7 @@ class operations(enum.Enum):
     HALT = 99
 
 def get_element(mode,lst,idx):
+    """returns element based upon the task mode"""
     match mode: 
         case op_mode.POSITION:
             return lst[lst[idx]]
@@ -107,7 +108,7 @@ def get_element(mode,lst,idx):
             return lst[idx]
 
 def calc(lst, idx,op, instruction):
-    """calc is short for calculator"""
+    """calc is short for calculator. Handles 1,2,7 and 8"""
     param_one_mode = op_mode(int(instruction[1]))
     param_two_mode = op_mode(int(instruction[0]))
 
@@ -131,6 +132,7 @@ def calc(lst, idx,op, instruction):
     return idx + 1
 
 def jump_operation(lst, idx, op, instruction):
+    """handles the jump operations 5 and 6"""
     param_one_mode = op_mode(int(instruction[1]))
     param_two_mode = op_mode(int(instruction[0]))
 
@@ -144,6 +146,7 @@ def jump_operation(lst, idx, op, instruction):
     return idx + 1 
 
 def read_value(lst, idx):
+    """handles input value operation 3"""
     idx += 1 
     while not False:
         # try catch error, to minimize ID10T errors
@@ -157,6 +160,7 @@ def read_value(lst, idx):
     return idx + 1
 
 def output_value(lst, idx, instruction):
+    """handles output value operation 4"""
     param_mode = op_mode(int(instruction[1]))
     idx += 1
     output = get_element(param_mode, lst, idx)
