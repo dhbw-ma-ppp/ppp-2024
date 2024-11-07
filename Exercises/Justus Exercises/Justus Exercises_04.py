@@ -1,3 +1,4 @@
+# (Output = 16694270; Output end: 312)
 
 # Extend the simulated computer from the second week:
 # You will need to support a number of additional opcodes:
@@ -139,6 +140,7 @@ def intcode_computer(memory, input_val=0):
 
 result = intcode_computer(memory.copy(), input_val=5)
 
+# (Output = 16694270; Output end: 312)
 print("Final output:", result)
 
 
