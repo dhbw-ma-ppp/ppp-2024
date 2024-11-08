@@ -103,7 +103,7 @@ class operations(enum.Enum):
     EQUALS = 8
     HALT = 99
 
-def get_element(mode:op_mode,lst:list,idx:int):
+def get_element(mode:op_mode,lst:list,idx:int) -> int:
     """returns element based upon the task mode"""
     match mode: 
         case op_mode.POSITION:
@@ -111,7 +111,7 @@ def get_element(mode:op_mode,lst:list,idx:int):
         case op_mode.IMMEDIATE:
             return lst[idx]
 
-def calc(lst:list, idx:int,op:operations, instruction:list):
+def calc(lst:list, idx:int,op:operations, instruction:list) -> int:
     """calc is short for calculator. Handles 1,2,7 and 8"""
     param_one_mode = op_mode(int(instruction[1]))
     param_two_mode = op_mode(int(instruction[0]))
@@ -135,7 +135,7 @@ def calc(lst:list, idx:int,op:operations, instruction:list):
     logging.debug(f'Calculation: {lst[destination]}')
     return idx + 1
 
-def jump_operation(lst:list, idx:int, op:operations, instruction:list):
+def jump_operation(lst:list, idx:int, op:operations, instruction:list) -> int:
     """handles the jump operations 5 and 6"""
     param_one_mode = op_mode(int(instruction[1]))
     param_two_mode = op_mode(int(instruction[0]))
@@ -149,7 +149,7 @@ def jump_operation(lst:list, idx:int, op:operations, instruction:list):
         return param_two
     return idx + 1 
 
-def read_value(lst: list, idx:int):
+def read_value(lst: list, idx:int) -> int:
     """handles input value operation 3"""
     idx += 1 
     while not False:
@@ -168,7 +168,7 @@ def read_value(lst: list, idx:int):
     logging.debug(f'Value: {lst[lst[idx]]} at index {lst[idx]}')
     return idx + 1
 
-def output_value(lst: list, idx: int, instruction: list):
+def output_value(lst: list, idx: int, instruction: list) -> int:
     """handles output value operation 4"""
     param_mode = op_mode(int(instruction[1]))
     idx += 1
@@ -220,7 +220,7 @@ def check_for_opcode(idx:int, lst:list):
     #endregion
     return False, 0
 
-def reader(lst: list,idx:int=0, end:bool=False):
+def reader(lst: list,idx:int=0, end:bool=False) -> int:
     while end == False:
         idx, end = check_for_opcode(idx, lst)
     return lst[0]
