@@ -29,6 +29,39 @@
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
 
+def intcode_process(memory):
+    pointer = 0  # current position of the pointer
+
+    def pointer_position_update(memory, pointer):
+        pos1 = memory[pointer + 1]
+        pos2 = memory[pointer + 2]
+        pos3 = memory[pointer + 3]
+        return pos1, pos2, pos3
+
+    while True:
+        opcode = memory[pointer]  # get opcode
+
+        if opcode == 99:  # end of code
+            break
+        elif opcode == 1:  # +-operatioon
+            pos1, pos2, pos3 = pointer_position_update(memory, pointer)
+            memory[pos3] = memory[pos1] + memory[pos2]
+            
+        elif opcode == 2:  # *-operation
+            pos1, pos2, pos3 = pointer_position_update(memory, pointer)
+            memory[pos3] = memory[pos1] * memory[pos2]
+        
+        else:
+            raise ValueError(f"Ungültiger Opcode {opcode} an Position {pointer} gefunden")
+
+        pointer += 4
+
+    return memory
+
+result = intcode_process([1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0])
+
+print(result)
+print(result[0])
 
 ###########################################
 # Write a function that takes an arbitrary number of unnamed arguments
@@ -39,5 +72,37 @@ commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 
 #   The second list should contain all strings which contain just one character.
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
-# examples and verify that the output for these examples is correct.
+
+def categorize_strings(*args):
+    numbers = []  
+    single_chars = []  
+    
+    for arg in args:
+        if arg.isdigit():  
+            numbers.append(arg)
+        elif len(arg) == 1:
+            single_chars.append(arg)
+    
+    return numbers, single_chars
+
+# Verification Check
+def verify(expected, actual):
+    if expected == actual:
+        print("Test passed!")
+    else:
+        print("Test failed!")
+        print(f"Expected: {expected}, but got: {actual}")
+
+
+expected_result_1 = (["12", "19", "9"], ["z", "X"])
+actual_result_1 = categorize_strings("12", "jesus", "19", "z", "hello", "9", "X", "Pokemon")
+verify(expected_result_1, actual_result_1)
+
+expected_result_2 = (["2", "7"], ["!", "b"])
+actual_result_2 = categorize_strings("apple", "2", "7", "!", "banana", "b", "Terminator")
+verify(expected_result_2, actual_result_2)
+
+expected_result_3 = (["1", "99"], ["P", "Y", "#"])
+actual_result_3 = categorize_strings("no", "1", "PokemonTerminator", "P", "Y", "99", "word", "#")
+verify(expected_result_3, actual_result_3)
 

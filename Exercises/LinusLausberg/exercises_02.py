@@ -27,7 +27,46 @@
 
 
 # print out which value is returned by your function for the following list:
+
+#Methoden
+
+def investigation (start):
+    opcode = working_list[start]
+    end = False
+    match opcode:
+        case 1:
+            start = addition(start)
+            return start, end
+        case 2:
+            start = multiplication(start)
+            return start, end
+        case 99:
+            end = True
+            return 1, end
+
+
+def addition (start_a):
+    solution = working_list[working_list[start_a+1]] + working_list[working_list[start_a+2]]
+    working_list[working_list[start_a+3]] = solution
+    return start_a + 4
+    
+
+def multiplication(start_m):
+    solution = working_list[working_list[start_m+1]] * working_list[working_list[start_m+2]]
+    working_list[working_list[start_m+3]] = solution
+    return start_m + 4
+
+
+#mainprogram
+
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
+
+working_list = commands
+end = False
+position = 0
+while end == False:
+    position, end = investigation(position)
+print('Die Endzahl ist:',working_list[0])
 
 
 ###########################################
@@ -39,5 +78,36 @@ commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 
 #   The second list should contain all strings which contain just one character.
 # Think of some good inputs to test this functionality, write down at least three
 # examples and verify that the output for these examples is correct.
-# examples and verify that the output for these examples is correct.
 
+
+def sorting(*starting_list):
+    number_list= []
+    one_charakter_list = []
+    for element in starting_list:
+        if len(element) == 1:
+            one_charakter_list.append(element)
+        try:
+            float(element)
+            number_list.append(element)
+        except ValueError:
+            pass
+    print('Dies ist die Liste alles Zahlen:' , number_list)
+    print('Es sind' , len(number_list) , 'Elemente')
+    print('Dies ist die Liste alles einstelligen Charakter:' , one_charakter_list)
+    print('Es sind' , len(one_charakter_list) , 'Elemente')
+
+
+print('Das ist die Testreihe 1: Tafel , 1 , 0 , 15 , Baum , 2.0 , g , f , w')
+print('Test der Testreihe 1. Es sollen folgende Zahlen ausgebenwerden: 1, 0, 15, 2.0. Insgesamt 4 Zahlen')
+print('Es sollen folgende einstellige Charakter ausgeben werden: 1, 0, g, f, w. Insgesamt sind es 5 einstellige Charakter')
+sorting('Tafel' , '1' , '0' , '15' , 'Baum' , '2.0' , 'g' , 'f' , 'w')
+
+print('\nDas ist die Testreihe 2: Hannah , Fabian , Philipp , Linus, 1 , 5 , j , 17')
+print('Test der Testreihe 2. Es sollen folgende Zahlen ausgebenwerden: 1, 5, 17. Insgesamt 3 Zahlen')
+print('Es sollen folgende einstellige Charakter ausgeben werden: 1, 5, j. Insgesamt sind es 3 einstellige Charakter')
+sorting('Hannah' , 'Fabian' , 'Philipp' , 'Linus', '1' , '5' , 'j' , '17')
+
+print('\nDas ist die Testreihe 3: 1, 2.8 , / ,  , k/m , Sticker , q , k')
+print('Test der Testreihe 3. Es sollen folgende Zahlen ausgebenwerden: 1, 2.8. Insgesamt 2 Zahlen')
+print('Es sollen folgende einstellige Charakter ausgeben werden: 1, /, q, k. Insgesamt sind es 4 einstellige Charakter')
+sorting('1', '2.8' , '/' , '' , 'k/m' , 'Sticker' , 'q' , 'k')
