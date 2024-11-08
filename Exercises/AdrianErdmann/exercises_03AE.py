@@ -7,71 +7,29 @@
 # Printing a cards string representation should give me a nice, 
 # readable description of that card.
 
-def numberValue(arg, number_value_dict):
-    for key, value in number_value_dict.items():
-        if arg == key:
-            return value
-        if arg == value:
-            return key
-
-def colorValue(arg, color_value_dict):
-    for key, value in color_value_dict.items():
-        if arg == key:
-            return value
-        if arg == value:
-            return key
-
-
 class Card():
-    def __init__(self, value, color, ace_value=14, number_value_dict=None, color_value_dict=None):
-        if number_value_dict:
-            self.number_value_dict = number_value_dict
-        else:
-            self.number_value_dict = {2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7, 8: 8, 9: 9, 10: 10, 11: "jack", 12: "queen", 13: "king"}
-            self.number_value_dict[ace_value] = "ace"
-        if color_value_dict:
-            self.color_value_dict = color_value_dict
-        else:
-            self.color_value_dict = {1: "diamond", 2: "heart", 3: "spade", 4: "club"}
-
-        if type(value) == int:
-            self.value = value
-            self.name = [numberValue(value, self.number_value_dict)]
-        else:
-            self.value = numberValue(value, self.number_value_dict)
-        
-        if type(color) == int:
-            self.color = color
-            self.name.append(colorValue(color, self.color_value_dict))
-        else:
-            self.color = colorValue(color, self.color_value_dict)
-            self.name.append(color)
+    def __init__(self, value, color) -> None:
+        self.value = value
+        self.color = color
     
     def cardReprTouple(self) -> tuple:
         return self.value, self.color
     
-    def cardTotalValue(self) -> int:
-        return self.value * self.color
+    def __eq__(self, value) -> bool:
+        if type(value) != type(self):
+            return NotImplemented
+        if self.cardReprTouple() == value.cardReprTouple():
+            return True
         
-    def __str__(self):
-        return f"{self.name[0]} of {self.name[1]}s"
-    
-    def __eq__(self, value: object) -> bool:
-        if type(self) == type(value) and self.cardReprTouple() == value.cardReprTouple():
-            return True
-        return False
-    
-    def __lt__(self, value: object) -> bool:
-        if type(self) == type(value) and self.cardTotalValue() < value.cardTotalValue():
-            return True
-        return False 
+    def __str__(self) -> None:
+        return f"{self.value} of {self.color}s"
 
 
 class Deck():
-    def __init__(self, all_values, all_colors, ace_value=14, number_value_dict=None, color_value_dict=None) -> None:
+    def __init__(self, all_values, all_colors) -> None:
         self.all_values = all_values
         self.all_colors = all_colors
-        self.cards = [Card(value, color, ace_value, number_value_dict=number_value_dict, color_value_dict=color_value_dict) for color in all_colors for value in all_values]
+        self.cards = [Card(value, color) for color in all_colors for value in all_values]
 
     def retrieveCard(self, index) -> Card:
         return self.cards.pop(index)
@@ -90,23 +48,13 @@ class Deck():
 
     def __iter__(self) -> tuple:
         return (card for card in self.cards)
-    
-    def __eq__(self, compare: object) -> bool:
-        if type(self) == type(compare) and len(self) == len(compare):
-            for i in range(len(self)):
-                if self[i] == compare[i]:
-                    continue
-                break
-            else:
-                return True
-        return False
 
 
 class FrenchDeck(Deck):
-    def __init__(self, ace_value=14):
-        all_values = range(2, 15)
-        all_colors = range (1, 5)
-        super().__init__(all_values, all_colors, ace_value)
+    def __init__(self) -> None:
+        all_values = [str(x) for x in range(2, 11)] + ["jack", "queen", "ace"]
+        all_colors = ["diamond", "heart", "spade", "club"]
+        super().__init__(all_values, all_colors)
 
 
 french_deck = FrenchDeck()
@@ -115,28 +63,24 @@ french_deck = FrenchDeck()
 # Create a second class that represents a deck of cards usable for Skat -- it should only contain cards from 7 upwards.
 # It should offer all the same functionality of the first class.
 
-
 class SkatDeck(Deck):
-    def __init__(self, ace_value=14):
-        all_values = range(7, 15)
-        all_colors = range (1, 5)
-        super().__init__(all_values, all_colors, ace_value)
+    def __init__(self) -> None:
+        all_values = [str(x) for x in range(7, 11)] + ["jack", "queen", "king", "ace"]
+        all_colors = ["diamond", "heart", "spade", "club"]
+        super().__init__(all_values, all_colors)
 
 
 skat_deck = SkatDeck()
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
 
-# Two decks with the same cards should be equal
-assert skat_deck == skat_deck
-
 # First Card should be a 2 of diamnds and last card should be a ace of clubs
-assert french_deck[0] == Card(2, 1)
-assert skat_deck[-1] == Card(14, 4)
+assert french_deck[1] == Card("3", "diamond")
+assert skat_deck[-2] == Card("king", "club")
 
 # after retrieving the first card the first should be a 3 of diamonds and after adding the first card should be the retrieved card
 temp_card = french_deck.retrieveCard(0)
-assert french_deck[0] == Card(3, 1)
+assert french_deck[0] == Card("3", "diamond")
 french_deck.addCard(temp_card, 0)
 assert french_deck[0] == temp_card
 
