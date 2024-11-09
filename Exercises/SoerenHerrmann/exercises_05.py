@@ -76,33 +76,34 @@ def read_input_sequence(file_path):
 
 
 def find_sums(lines):
-    for i in range(len(lines)-SHIFT): 
+    for i in range(len(lines) - SHIFT):
         found_sum = False
-        elem = lines[i+SHIFT]
+        elem = lines[i + SHIFT]
         set_next_color()
-        print(f'looking for sum for number {elem}')
-        summands = lines[i:i+SHIFT]
+        print(f'Looking for sum for number {elem}')
+        
+        summands = lines[i:i + SHIFT]
+        summands_set = set(summands)
         set_next_color()
         print(summands)
-        calculations = itertools.combinations(summands, 2)
-        
-        for pair in calculations:
-            a, b = pair
-            sum_of_elems = a+b
-            set_next_color()
-            print(f'{a} + {b} = {sum_of_elems}')
-            if elem == sum_of_elems:
+
+        for number in summands:
+            target = elem - number
+
+            if target in summands_set and target != number:
                 set_next_color()
-                print(f'Sum of {elem} is {a} + {b}')
+                print(f'Sum of {elem} is {number} + {target}')
                 found_sum = True
                 break
-        
-        if found_sum is False:
+
+        if not found_sum:
             set_next_color()
-            print(f'found not working sum at index {i+SHIFT}')
+            print(f'No working sum found at index {i + SHIFT}')
             break
 
 
 lines = read_input_sequence(sequence_path)
 # found not working sum at index 653 
 find_sums(lines)
+
+
