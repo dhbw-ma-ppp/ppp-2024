@@ -58,8 +58,7 @@ commands = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,40,71,224,1001,224,-111,22
 
 def investigation (start):
     instruction = str(working_list[start])
-    while len(instruction) < 4:
-        instruction = '0' + instruction
+    instruction = instruction.zfill(4)
     opcode = instruction[2] + instruction[3]
     end = False
     match opcode:
@@ -91,63 +90,63 @@ def investigation (start):
             end = True
             return 1, end
 
-def modes(start, index, instructions):
+def modes_differentiation(start, index, instructions):
     match index:
         case 1:
             mode_decider = 1
         case 2:
             mode_decider = 0
     if instructions[mode_decider] == '0':
-        return working_list[working_list[start+index]]
+        return working_list[working_list[start + index]]
     elif instructions[mode_decider] == '1':
-        return working_list[start+index]
+        return working_list[start + index]
 
 
 
-def addition (start_a, instruction):
-    solution = int(modes(start_a, 1, instruction)) + int(modes(start_a, 2, instruction))
-    working_list[working_list[start_a+3]] = solution
-    return start_a + 4
+def addition (start, instruction):
+    solution = modes_differentiation(start, 1, instruction) + modes_differentiation(start, 2, instruction)
+    working_list[working_list[start + 3]] = solution
+    return start + 4
 
-def multiplication(start_m, instruction):
-    solution = modes(start_m, 1, instruction) * modes(start_m, 2, instruction)
-    working_list[working_list[start_m+3]] = solution
-    return start_m + 4
+def multiplication(start, instruction):
+    solution = modes_differentiation(start, 1, instruction) * modes_differentiation(start, 2, instruction)
+    working_list[working_list[start + 3]] = solution
+    return start + 4
 
-def inputs(start_i):
+def inputs(start):
     solution = input('Bitte gibt einen Input ein:')
-    working_list[working_list[start_i+1]] = int(solution)
-    return start_i + 2
+    working_list[working_list[start + 1]] = int(solution)
+    return start + 2
 
-def output(start_o):
-    print('Output wegen Opcode 4:',working_list[working_list[start_o+1]])
-    return start_o + 2
+def output(start):
+    print('Output wegen Opcode 4:',working_list[working_list[start+1]])
+    return start + 2
 
-def jump_if_true(start_t, instruction):
-    if modes(start_t, 1, instruction) != 0:
-        return modes(start_t, 2, instruction)
+def jump_if_true(start, instruction):
+    if modes_differentiation(start, 1, instruction) != 0:
+        return modes_differentiation(start, 2, instruction)
     else:
-        return start_t+3
+        return start+3
 
-def jump_if_false(start_f, instruction):
-    if modes(start_f, 1, instruction) == 0:
-        return modes(start_f, 2, instruction)
+def jump_if_false(start, instruction):
+    if modes_differentiation(start, 1, instruction) == 0:
+        return modes_differentiation(start, 2, instruction)
     else:
-        return start_f+3
+        return start+3
 
-def less_than(start_l, instruction):
-    if modes(start_l, 1, instruction) < modes(start_l, 2, instruction):
-        working_list[working_list[start_l+3]] = 1
+def less_than(start, instruction):
+    if modes_differentiation(start, 1, instruction) < modes_differentiation(start, 2, instruction):
+        working_list[working_list[start+3]] = 1
     else:
-        working_list[working_list[start_l+3]] = 0
-    return start_l + 4
+        working_list[working_list[start+3]] = 0
+    return start + 4
 
-def equals(start_e, instructions):
-    if modes(start_e, 1, instructions) == modes(start_e, 2, instructions):
-        working_list[working_list[start_e+3]] = 1
+def equals(start, instructions):
+    if modes_differentiation(start, 1, instructions) == modes_differentiation(start, 2, instructions):
+        working_list[working_list[start+3]] = 1
     else:
-        working_list[working_list[start_e+3]] = 0
-    return start_e + 4
+        working_list[working_list[start+3]] = 0
+    return start + 4
  
 
 def execute():
