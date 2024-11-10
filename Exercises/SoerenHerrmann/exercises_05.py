@@ -181,4 +181,5 @@ shiny_gold_bag = count_bag("shiny gold bags")
 
 set_next_color()
 print(f'There are exactly {bag_count} bags in the file')
+set_next_color()
 print(f'There are exactly {shiny_gold_bag} bags in the shiny gold bag')
