@@ -45,6 +45,8 @@
 # For the actual inputs, how many bags are inside your single shiny gold bag?
 # As usual, please list the answer as part of the PR.
 import itertools
+import pathlib
+
 from colorama import Fore
 import os
 
@@ -106,4 +108,74 @@ lines = read_input_sequence(sequence_path)
 # found not working sum at index 653 
 find_sums(lines)
 
+# --- Bags ---
+bag_path = os.path.join(
+    script_dir, "..", "..", "data", "input_bags.txt"
+)
 
+class Bag():
+    def __init__(self, type:str):
+        self.type = type
+        self.inventory = {}
+
+    def add_content(self, bag_type:str, quantity:int):
+        self.inventory[bag_type] =quantity
+
+    def __repr__(self):
+        return f'Bag({self.type}, contains={self.inventory})'
+
+def parse_bag_line(line):
+    words = line.split()
+
+    main_bag_name = ' '.join(words[:3])
+    main_bag = Bag(main_bag_name)
+    if "no other bags" in line:
+        return main_bag
+
+    contents_part = ' '.join(words[4:])
+    items = contents_part.split(', ')
+
+    for item in items:
+        item_parts = item.split()
+        quantity = int(item_parts[0])
+        bag_type = ' '.join(item_parts[1:3]) + " bags"
+
+        main_bag.add_content(bag_type, quantity)
+
+    return main_bag
+
+
+def read_bags(path:pathlib.Path):
+    with open(path, "r") as f:
+        lines = f.readlines()
+        bags = {}
+        for line in lines:
+            bag = parse_bag_line(line)
+            bags[bag.type] = bag
+        f.close()
+
+    return bags
+
+# each line contains a seperate bag statement
+sequence_bags = read_bags(bag_path)
+
+def count_bag(bag):
+    if type(bag) is str:
+        bag = sequence_bags[bag]
+
+    if bag.inventory == {}:
+            return 1
+
+
+    count = 1
+    for sub_bag in bag.inventory.keys():
+        count += count_bag(sub_bag)
+
+    return count
+
+bag_count = 0
+for bag in sequence_bags:
+    bag_count += count_bag(bag)
+
+set_next_color()
+print(f'There are exactly {bag_count} bags in the file')
