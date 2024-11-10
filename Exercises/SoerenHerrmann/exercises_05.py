@@ -100,7 +100,7 @@ def find_sums(lines):
 
         if not found_sum:
             set_next_color()
-            print(f'No working sum found at index {i + SHIFT}')
+            print(f'No working sum found at index {i + SHIFT} for number {elem}')
             break
 
 
