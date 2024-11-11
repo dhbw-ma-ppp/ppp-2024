@@ -27,45 +27,49 @@ class ElementsOfDocumentIterator:
     def __next__(self):
         return self.inputfile.readline()
 
-
+# open file, create Iterator and puts the first 25 numbers in a list before, so they can be used in the first calculation
 def preprocess():
     inputfile = open(r'C:\Users\linus\Documents\GitHub\ppp-2024\data\input_sequence.txt','r')
     Elements = iter(ElementsOfDocumentIterator(inputfile))
-    before:list  = []
+    before:list[str]  = []
     for counter in range(0,26):
-        number = next(Elements, inputfile)
-        number_ready = ''
+        number: str = next(Elements, inputfile)
+        number_ready: str = ''
         for point in number:
             if point != '\n':
                 number_ready = number_ready + point
         before.append(number_ready)
     return Elements, inputfile, before
 
+# trys to sum up two of the Numbers in before to get the wanted Number
 def checking(before):
-    goal = int(before[25])
+    goal: int = int(before[25])
     for counter1 in range(0, 25):
         for counter2 in range(counter1+1, 25):
-            solution = int(before[counter1]) + int(before[counter2])
+            solution: int = int(before[counter1]) + int(before[counter2])
             if solution == goal:
                 return True, 0
     return False, goal
 
-def move(Elements, inputfile, before):
+# moves the list before one position to the right. So the first Item will be deletet and one will e attached. 
+# If end of file is reached, it will return False.
+def move(Elements, inputfile, before) -> bool:
     before.pop(0)
     number = next(Elements, inputfile)
     if type(number) == ElementsOfDocumentIterator:
         return False
-    number_ready = ''
+    number_ready: str = ''
     for point in number:
         if point != '\n':
             number_ready = number_ready + point
     before.append(number_ready)
     return True
-    
+
+# just the call of funktions
 def main1():
-    ending_solution = 0
+    ending_solution: int = 0
     inputfile, Elements, before = preprocess()
-    run = True
+    run: bool = True
     while run:
         run, solution = checking(before)
         if run:
@@ -121,14 +125,15 @@ class BagsInDocumentIterator:
         return self.inputfileb.readline()
     
 
-def info(Iterator, dic_all):
+# reads every line from the file and fills the dict, with every bag as key and his content as value
+def dict_generation(Iterator, dict_all):
     raw_row = next(Iterator)
-    str_before_contain = ''
-    lst_after_contain = []
-    temp_word = ''
-    temp_lst = ''
-    temp_sentens = ''
-    contain = False
+    str_before_contain: str = ''
+    lst_after_contain:list = [] 
+    temp_word: str = ''
+    temp_lst: str = ''
+    temp_sentens: str = ''
+    contain: bool = False
     for place in raw_row:
         if contain == False:
             if place == ' ':
@@ -163,16 +168,18 @@ def info(Iterator, dic_all):
                     temp_word = temp_word + place
     lst_after_contain.append(temp_sentens)
     lst_after_contain.pop(0)                
-    dic_all[str(str_before_contain)] = lst_after_contain
-    
-def insert(dic_all, search):
-    end = False
-    content = dic_all[search]
+    dict_all[str(str_before_contain)] = lst_after_contain
+
+# exchange every bag, which is in the shiny gold bag with his content. 
+# Runs till all bags have no bags in them and return sum of bags in the shiny gold bag
+def insert_and_counting(dict_all, search) -> int:
+    end: bool = False
+    content = dict_all[search]
     counter = 1
     while counter < len(content):
         new_search = content[counter]
         multipler = content[counter-1]
-        new_content = dic_all[new_search]
+        new_content = dict_all[new_search]
         if new_content == []:
             counter += 2
         else:
@@ -185,21 +192,22 @@ def insert(dic_all, search):
                     content.append(element)
                 except ValueError:
                     content.append(element)
-            dic_all.update({search:content })
-    counter = 0
-    result = 0
+            dict_all.update({search:content})
+    counter: int = 0
+    result: int = 0
     while counter < len(content):
         result += int(content[counter])
         counter += 2
     return result
 
+# main-programm
 def main2():
-    dic_all = {}
-    inputfileb = open(r'C:\Users\linus\Documents\GitHub\ppp-2024\data\input_bags.txt','r')
+    dict_all = {}
+    inputfileb = open(r'C:\Users\linus\Documents\GitHub\ppp-2024\data\input_bags.txt','r')  
     Iterator = iter(BagsInDocumentIterator(inputfileb))
     for x in range(0,594):
-        info(Iterator, dic_all)
-    result = insert(dic_all, 'shinygold')
+        dict_generation(Iterator, dict_all)
+    result = insert_and_counting(dict_all, 'shinygold')
     print('The shiny gold bag contains', result, 'bags')
 
 
