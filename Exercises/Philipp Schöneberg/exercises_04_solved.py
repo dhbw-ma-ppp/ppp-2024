@@ -1,4 +1,6 @@
-8# Extend the simulated computer from the second week:
+import operator
+
+# Extend the simulated computer from the second week:
 # You will need to support a number of additional opcodes:
 # - 3: read a single integer as input and save it to the position given
 #      by its only parameter. the command 3,19 would read an input
@@ -117,19 +119,27 @@ def compute(lst):
                 extended_opcode = extended_opcode // 10
 
     i, opcode, index_1, index_2, index_3, parameter_1, parameter_2 = 0, 0, 0, 0, 0, 0, 0
+    operations_with_two_parameters = {
+        1: operator.add,
+        2: operator.mul,
+        7: operator.is_not,
+        8: operator.is_
+    }
     while True:
         try:
             get_opcode_indices_and_parameter()
             match opcode:
-                case 1:
-                    lst[index_3] = parameter_1+parameter_2
-                    i += 4
-                case 2:
-                    lst[index_3] = parameter_1*parameter_2
+                case 1 | 2 | 7 | 8:
+                    lst[index_3] = operations_with_two_parameters[opcode](parameter_1, parameter_2)
                     i += 4
                 case 3:
-                    x = int(input("Geben Sie eine Zahl ein: "))
-                    lst[index_1] = x
+                    while True:
+                        try:
+                            user_input = int(input("Enter an integer: "))
+                            break
+                        except ValueError:
+                            print("The given input was not an integer.")
+                    lst[index_1] = user_input
                     i += 2
                 case 4:
                     print(f"The value at index {index_1} is {parameter_1}.")
@@ -144,18 +154,6 @@ def compute(lst):
                         i = parameter_2
                     else:
                         i += 3
-                case 7:
-                    if parameter_1 < parameter_2:
-                        lst[index_3] = 1
-                    else:
-                        lst[index_3] = 0
-                    i += 4
-                case 8:
-                    if parameter_1 == parameter_2:
-                        lst[index_3] = 1
-                    else:
-                        lst[index_3] = 0
-                    i += 4
                 case 99:
                     break
                 case _:
