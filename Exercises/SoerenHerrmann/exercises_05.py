@@ -113,16 +113,18 @@ bag_path = os.path.join(
     script_dir, "..", "..", "data", "input_bags.txt"
 )
 
+
 class Bag():
-    def __init__(self, type:str):
+    def __init__(self, type: str):
         self.type = type
         self.inventory = {}
 
-    def add_content(self, bag_type:str, quantity:int):
-        self.inventory[bag_type] =quantity
+    def add_content(self, bag_type: str, quantity: int):
+        self.inventory[bag_type] = quantity
 
     def __repr__(self):
         return f'Bag({self.type}, contains={self.inventory})'
+
 
 def parse_bag_line(line):
     words = line.split()
@@ -145,7 +147,7 @@ def parse_bag_line(line):
     return main_bag
 
 
-def read_bags(path:pathlib.Path):
+def read_bags(path: pathlib.Path):
     with open(path, "r") as f:
         lines = f.readlines()
         bags = {}
@@ -156,24 +158,26 @@ def read_bags(path:pathlib.Path):
 
     return bags
 
+
 # each line contains a seperate bag statement
 sequence_bags = read_bags(bag_path)
+
 
 def count_bag(bag):
     if type(bag) is str:
         bag = sequence_bags[bag]
 
     if bag.inventory == {}:
-            return 1
+        return 1
 
-
-    count = 1
+    count: int = 1
     for sub_bag in bag.inventory.keys():
         count += count_bag(sub_bag)
 
     return count
 
-bag_count = 0
+
+bag_count: int = 0
 for bag in sequence_bags:
     bag_count += count_bag(bag)
 
