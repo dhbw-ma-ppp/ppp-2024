@@ -72,7 +72,7 @@ def investigation (start):
             start = inputs(start)
             return start, end
         case '04':
-            start = output(start)
+            start = output(start, instruction)
             return start, end
         case '05':
             start = jump_if_true(start, instruction)
@@ -118,8 +118,8 @@ def inputs(start):
     working_list[working_list[start + 1]] = int(solution)
     return start + 2
 
-def output(start):
-    print('Output wegen Opcode 4:',working_list[working_list[start+1]])
+def output(start, instruction):
+    print('Output wegen Opcode 4:',modes_differentiation(start, 1, instruction))
     return start + 2
 
 def jump_if_true(start, instruction):
