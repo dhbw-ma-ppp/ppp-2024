@@ -10,12 +10,22 @@ import itertools
 # readable description of that card.
 
 
+class Card:
+    def __init__(self, suit, rank):
+        self.suit = suit
+        self.rank = rank
+
+    def __str__(self):
+        return (f"The {self.rank} of {self.suit}")
+
+
 class FrenchDeckOfCards:
     suits = ["diamonds", "hearts", "spades", "clubs"]
+    ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
 
     def __init__(self):
-        self.ranks = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-        self.cards = list(itertools.product(self.suits, self.ranks))
+        # print(list(itertools.product(self.suits, self.ranks)))
+        self.cards = list(Card(i[0], i[1]) for i in list(itertools.product(self.suits, self.ranks)))
 
     def __iter__(self):
         return (elem for elem in self.cards)
@@ -24,7 +34,11 @@ class FrenchDeckOfCards:
         return self.cards[index]
 
     def __str__(self):
-        return str(list(self))
+        string_representation = ""
+        for elem in self:
+            string_representation += str(elem) + ", "
+        string_representation = string_representation[0: -2]
+        return string_representation
 
 
 # PART 2:
@@ -33,9 +47,7 @@ class FrenchDeckOfCards:
 
 
 class SkatDeckOfCards(FrenchDeckOfCards):
-    def __init__(self):
-        self.ranks = ["7", "8", "9", "10", "J", "Q", "K", "A"]
-        self.cards = list(itertools.product(self.suits, self.ranks))
+    ranks = ["7", "8", "9", "10", "J", "Q", "K", "A"]
 
 
 # Write some code to test the functionality of both kinds of decks. (You can use `assert` to make sure your classes behave the way you expect them to.)
@@ -43,19 +55,21 @@ class SkatDeckOfCards(FrenchDeckOfCards):
 
 def test_FrenchDeckOfCards():
     french_deck = FrenchDeckOfCards()
-    assert french_deck[0] == ('diamonds', '2')
-    assert french_deck[13] == ('hearts', '2')
-    assert french_deck[26] == ('spades', '2')
-    assert french_deck[39] == ('clubs', '2')
+    assert str(french_deck[0]) == 'The 2 of diamonds'
+    assert str(french_deck[13]) == 'The 2 of hearts'
+    assert str(french_deck[26]) == 'The 2 of spades'
+    assert str(french_deck[39]) == 'The 2 of clubs'
+    # print(french_deck)
     print("The test of the class FrenchDeckOfCards was succesful!")
 
 
 def test_SkatDeckOfCards():
     skat_deck = SkatDeckOfCards()
-    assert skat_deck[0] == ('diamonds', '7')
-    assert skat_deck[8] == ('hearts', '7')
-    assert skat_deck[16] == ('spades', '7')
-    assert skat_deck[24] == ('clubs', '7')
+    assert str(skat_deck[0]) == 'The 7 of diamonds'
+    assert str(skat_deck[8]) == 'The 7 of hearts'
+    assert str(skat_deck[16]) == 'The 7 of spades'
+    assert str(skat_deck[24]) == 'The 7 of clubs'
+    # print(skat_deck)
     print("The test of the class SkatDeckOfCards was succesful!")
 
 
@@ -80,43 +94,53 @@ test_SkatDeckOfCards()
 # run your function with the lower bound `134564` and the upper bound `585159`. Note the resulting count
 # in your pull request, please.
 
-def NumberAcceptor(lower_bound, upper_bound):
+def number_acceptor(lower_bound, upper_bound):
     """
-    This function takes a lower and upper bound as parametersd and returns every number which fullfills the following criteria:
+    This function takes a lower and upper bound as parametersd and returns
+    every number which fullfills the following criteria:
 
-    - they are within the (left-inclusive and right-exclusive) bounds passed to the function
-    - there is at least one group of exactly two adjacent digits within the number which are the same
+    - they are within the (left-inclusive and right-exclusive) bounds passed
+    to the function
+    - there is at least one group of exactly two adjacent digits within the
+    number which are the same
     - digits only increase going from left to right
     """
-    accepted_number_counter = 0
+    def is_monotonic_digits():
+        """
+        Checks whether a number containing a group of exactly two adjacent
+        digits is a valid number by checking the increments of the digits from
+        left to right.
+        """
+        for j in range(len(testing_number_string)-1):
+            if int(testing_number_string[j]) > int(testing_number_string[j+1]):
+                return
+        else:
+            accepted_numbers.append(testing_number)
+            return
+
     accepted_numbers = []
     for testing_number in range(lower_bound, upper_bound):
         testing_number_string = str(testing_number)
         connected_equal_chars_counter = 1
         for i in range(len(testing_number_string)-1):
             if (connected_equal_chars_counter == 2 and testing_number_string[i] != testing_number_string[i+1]) or (connected_equal_chars_counter == 1 and i == len(testing_number_string)-2 and testing_number_string[i] == testing_number_string[i+1]):
-                for j in range(len(testing_number_string)-1):
-                    if int(testing_number_string[j]) > int(testing_number_string[j+1]):
-                        break
-                else:
-                    accepted_number_counter += 1
-                    accepted_numbers.append(testing_number)
-                    break
+                is_monotonic_digits()
+                break
             elif testing_number_string[i] == testing_number_string[i+1]:
                 connected_equal_chars_counter += 1
             else:
                 connected_equal_chars_counter = 1
-    return accepted_number_counter
+    return len(accepted_numbers)
 
 
-def test_NumberAcceptor():
-    assert NumberAcceptor(123345, 123346) == 1
-    assert NumberAcceptor(123341, 123342) == 0
-    assert NumberAcceptor(123334, 123335) == 0
-    assert NumberAcceptor(111334, 111335) == 1
-    assert NumberAcceptor(112233, 112234) == 1
+def test_number_acceptor():
+    assert number_acceptor(123345, 123346) == 1
+    assert number_acceptor(123341, 123342) == 0
+    assert number_acceptor(123334, 123335) == 0
+    assert number_acceptor(111334, 111335) == 1
+    assert number_acceptor(112233, 112234) == 1
     print("The test of the function NumberAcceptor was succesful!")
 
 
-test_NumberAcceptor()
-print(NumberAcceptor(134564, 585159))
+test_number_acceptor()
+print(number_acceptor(134564, 585159))
