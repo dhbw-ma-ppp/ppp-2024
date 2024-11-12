@@ -175,6 +175,7 @@ def dict_generation(Iterator, dict_all):
 def insert_and_counting(dict_all, search) -> int:
     end: bool = False
     content = dict_all[search]
+    counter_bags_with_bags = 0
     counter = 1
     while counter < len(content):
         new_search = content[counter]
@@ -183,6 +184,7 @@ def insert_and_counting(dict_all, search) -> int:
         if new_content == []:
             counter += 2
         else:
+            counter_bags_with_bags += int(multipler)
             content.pop(counter-1)
             content.pop(counter-1)
             for element in new_content:
@@ -198,6 +200,7 @@ def insert_and_counting(dict_all, search) -> int:
     while counter < len(content):
         result += int(content[counter])
         counter += 2
+    result += counter_bags_with_bags
     return result
 
 # main-programm
@@ -212,4 +215,4 @@ def main2():
 
 
 main2()
-#Output: 4335
+#Output: 6260
