@@ -46,7 +46,6 @@
 # As usual, please list the answer as part of the PR.
 import itertools
 import pathlib
-
 from colorama import Fore
 import os
 
@@ -170,9 +169,9 @@ def count_bag(bag):
     if bag.inventory == {}:
         return 1
 
-    count: int = 1
+    count: int = 0
     for sub_bag in bag.inventory.keys():
-        count += count_bag(sub_bag)
+        count += bag.inventory[sub_bag]*count_bag(sub_bag)
 
     return count
 
