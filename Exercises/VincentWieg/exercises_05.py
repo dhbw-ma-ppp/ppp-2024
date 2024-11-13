@@ -15,33 +15,43 @@
 # Find the first number in this list which can not be expressed as a
 # sum of two numbers out of the 25 numbers before it.
 # Please make not of your result in the PR.
+import os
 
-inputSequence = [35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576]
+
+
+with open("data\input_sequence.txt", "r") as file:
+    file_content = file.read()
+
+file_content_list = list(map(int, file_content.split()))
+
+
+#inputSequence = [35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576]
 
 def sequenceChecker(inputSequence):
-    last_digit = 0
-    digit_to_check = 6
-    list_to_check = inputSequence[last_digit:digit_to_check - 1]
-    for i in list_to_check:
-        return "366365464"
+    numbers_can_be_added = 25 
 
-    
-        
-print(sequenceChecker(inputSequence))
+    for index_of_digit_to_check in range(numbers_can_be_added, len(inputSequence)):
+        digit_to_check = inputSequence[index_of_digit_to_check]
+        list_to_check = inputSequence[index_of_digit_to_check - numbers_can_be_added : index_of_digit_to_check]
+
+        found_sum = False
+        for i in range(len(list_to_check)):
+            for j in range(i + 1, len(list_to_check)): 
+                if list_to_check[i] + list_to_check[j] == digit_to_check:
+                    found_sum = True
+                    break
+            if found_sum:
+                break
 
 
+        if found_sum == False:
+            print("First number that cannot be expressed as the sum of 2 numbers is:", digit_to_check)
+            return digit_to_check
 
-#   checkNumber = 6
-#     startChecking = 0
-#     while(stop != False):
-#         for i in inputSequence[startChecking::]:
-#             for j in inputSequence[startChecking::]:
-#                 if i + j == inputSequence[checkNumber]:
-#                     checkNumber += 1
-#                     print("Gommemode")
-#                     stop = False
-#                 elif startChecking + 5 == 5 & startChecking == 5:
-#                     stop = True
+    return None
+
+
+sequenceChecker(file_content_list)
 
 
 
@@ -72,3 +82,45 @@ print(sequenceChecker(inputSequence))
 # and much more deeply nested than the example above. 
 # For the actual inputs, how many bags are inside your single shiny gold bag?
 # As usual, please list the answer as part of the PR.
+import re
+
+
+def bag_rules(line):
+    container, contains = line.split("contain")
+    container = container.replace("bags", "").strip()
+    contains_list = []
+
+    if "no other bags" not in contains:
+        contains_parts = contains.split(",") #split with ,
+        for part in contains_parts:
+            match = re.match(r"(\d+) (.+?) bag", part.strip()) #r = regualr string, (/d+) = reads numbers (.+?) = ready characters --> will match bag type
+            if match:
+                count = int(match.group(1))
+                bag_type = match.group(2)
+                contains_list.append((bag_type, count))
+    return container, contains_list
+
+
+rules= {}
+with open("data\input_bags.txt", "r") as file:
+    input_file = file.readlines()
+
+
+
+for line in input_file:
+    container, contains = bag_rules(line)
+    rules[container] = contains
+
+
+def count_bags(bag_type, rules):
+    total = 0
+    for inner_bag, count in rules.get(bag_type, []):
+        total += count * (1 + count_bags(inner_bag, rules))
+    return total
+
+
+result = count_bags("shiny gold", rules)
+print(result)
+
+
+#output :6260
