@@ -200,7 +200,7 @@ def check_for_opcode(idx:int, lst:list):
             idx = read_value(lst, idx)
             return idx, end
         case operations.OUTPUT:
-            idx = read_value(lst, idx)
+            idx = output_value(lst, idx, operation)
             return idx, end
         case operations.JUMP_IF_TRUE:
             idx = jump_operation(lst, idx, operations.JUMP_IF_TRUE, operation)
