@@ -79,6 +79,8 @@ check_umbers_before = 25
 with open(path_sequence) as content_iterator:
     first_not_buildable = getFirstNotBuildable(content_iterator, check_umbers_before)
     print(f"first number that is not buildable and their index: {first_not_buildable}")
+    # the first number not fulfilling the criteria is 1639024365
+    # it's in the line 654 of the given input-file
 
 # PART 2:
 # The input to this exercise specifies rules for bags containing other bags.
@@ -136,3 +138,4 @@ path_bags = "./data/input_bags.txt"
 bag_data = getBagDict(path_bags)
 bag_count = countBags("shiny gold bag", bag_data)
 print(f"Number of bags in the shiny gold bag: {bag_count}")
+# there are 6260 bags inside the "shiny gold bag"
