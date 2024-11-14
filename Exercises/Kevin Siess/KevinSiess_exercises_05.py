@@ -122,6 +122,6 @@ def count_bags(bag_name):
 check_bags()
 
 total_bags = count_bags("shiny gold")
-print(f"\nDie Gesamtanzahl der Taschen in 'shiny gold' beträgt: {total_bags}")
+print(f"\nThe total amount of bags in 'shiny gold' is: {total_bags}")
 
 
