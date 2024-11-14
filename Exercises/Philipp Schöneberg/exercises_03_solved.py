@@ -107,29 +107,44 @@ def number_acceptor(lower_bound, upper_bound):
     """
     def is_monotonic_digits():
         """
-        Checks whether a number containing a group of exactly two adjacent
-        digits is a valid number by checking the increments of the digits from
-        left to right.
+        Checks whether a number contains a group of exactly two adjacent
+        digits.
         """
-        for j in range(len(testing_number_string)-1):
-            if int(testing_number_string[j]) > int(testing_number_string[j+1]):
-                return
-        else:
-            accepted_numbers.append(testing_number)
-            return
-
-    accepted_numbers = []
-    for testing_number in range(lower_bound, upper_bound):
-        testing_number_string = str(testing_number)
-        connected_equal_chars_counter = 1
+        nonlocal testing_number
+        nonlocal testing_number_string
+        nonlocal connected_equal_chars_counter
         for i in range(len(testing_number_string)-1):
             if (connected_equal_chars_counter == 2 and testing_number_string[i] != testing_number_string[i+1]) or (connected_equal_chars_counter == 1 and i == len(testing_number_string)-2 and testing_number_string[i] == testing_number_string[i+1]):
-                is_monotonic_digits()
+                accepted_numbers.append(testing_number)
                 break
             elif testing_number_string[i] == testing_number_string[i+1]:
                 connected_equal_chars_counter += 1
             else:
                 connected_equal_chars_counter = 1
+
+    def calculate_next_testing_number():
+        """
+        This function calculates the next number to be checked by the function.
+        It ensures that no digit is greater than any digit after it.
+        """
+        nonlocal testing_number
+        nonlocal testing_number_string
+        testing_number += 1
+        testing_number_string = str(testing_number)
+        for i in range(len(testing_number_string)-1):
+            if int(testing_number_string[i]) > int(testing_number_string[i+1]):
+                testing_number_string = testing_number_string[:i] + 2*testing_number_string[i] + testing_number_string[i+2:]
+        else:
+            testing_number = int(testing_number_string)
+
+    accepted_numbers = []
+    testing_number = lower_bound-1
+    testing_number_string = str(testing_number)
+    calculate_next_testing_number()
+    while testing_number < upper_bound:
+        connected_equal_chars_counter = 1
+        is_monotonic_digits()
+        calculate_next_testing_number()
     return len(accepted_numbers)
 
 
