@@ -171,8 +171,8 @@ def test_compute():
 
 test_compute()
 
-print(compute([3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8]))  # 8
-print(compute([3, 3, 1107, -1, 8, 3, 4, 3, 99]))  # 8
-print(compute([3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1]))  # 0
+print(compute([3, 9, 8, 9, 10, 9, 4, 9, 99, -1, 8]))                # Test function requiring 8 as input.
+print(compute([3, 3, 1107, -1, 8, 3, 4, 3, 99]))                    # Test function requiring 8 as input.
+print(compute([3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1]))   # Test function requiring 0 as input.
 
-print(compute(commands))
+print(compute(commands))                                            # Function requiring 0 as input.
