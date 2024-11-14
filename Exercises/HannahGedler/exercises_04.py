@@ -57,10 +57,17 @@ commands = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,40,71,224,1001,224,-111,22
 
 list1 = [1, 1, 1, 4, 99, 5, 6, 0, 99]
 
+<<<<<<< Updated upstream
 def find_number(list):
     instructionCounter = 0
     while True:
         opcode = str(list[instructionCounter])
+=======
+def find_number(test_list):
+    instructionCounter = 0
+    while True:
+        opcode = str(test_list[instructionCounter])
+>>>>>>> Stashed changes
         while len(opcode) < 5:
             opcode = "0" + opcode
         instruction = str(opcode[3:5])
@@ -70,6 +77,7 @@ def find_number(list):
         # opcode 1: addition
         if instruction == "01":
             if first_mode != '0':
+<<<<<<< Updated upstream
                 firstParameter = list[instructionCounter + 1]
             if first_mode == '0':
                 firstParameter = list[list[instructionCounter + 1]]
@@ -94,10 +102,37 @@ def find_number(list):
             result = firstParameter * secondParameter
             z = list[3 + instructionCounter]
             list[z] = result
+=======
+                firstParameter = test_list[instructionCounter + 1]
+            elif first_mode == '0':
+                firstParameter = test_list[test_list[instructionCounter + 1]]
+            if second_mode != '0':
+                secondParameter = test_list[instructionCounter + 2]
+            elif second_mode == '0':
+                secondParameter = test_list[test_list[instructionCounter + 2]]
+            result = firstParameter + secondParameter
+            target = test_list[instructionCounter + 3]
+            test_list[target] = result
+            instructionCounter += 4
+        # opcode 2: multiplication
+        elif instruction == "02":
+            if first_mode != '0':
+                firstParameter = test_list[instructionCounter + 1]
+            elif first_mode == '0':
+                firstParameter = test_list[test_list[instructionCounter + 1]]
+            if second_mode != '0':
+                secondParameter = test_list[instructionCounter + 2]
+            elif second_mode == '0':
+                secondParameter = test_list[test_list[instructionCounter + 2]]
+            result = firstParameter * secondParameter
+            target = test_list[3 + instructionCounter]
+            test_list[target] = result
+>>>>>>> Stashed changes
             instructionCounter += 4
         # opcode 3: user input, no immediate mode possible
         elif instruction == "03":
             user_input = int(input("Please enter a number:"))
+<<<<<<< Updated upstream
             save_at_position = list[instructionCounter + 1]
             list[save_at_position] = user_input
             instructionCounter += 2
@@ -116,6 +151,32 @@ def find_number(list):
                 secondParameter = list[instructionCounter + 2]
             if second_mode == '0':
                 secondParameter = list[list[instructionCounter + 2]]
+=======
+            save_at_position = test_list[instructionCounter + 1]
+            test_list[save_at_position] = user_input
+            instructionCounter += 2
+        # opcode 4: output
+        elif instruction == "04":
+            if first_mode != '0':  
+                firstParameter = print(test_list[instructionCounter + 1])
+            elif first_mode == '0':
+                firstParameter = print(test_list[test_list[instructionCounter + 1]])
+            
+            instructionCounter += 2
+
+
+
+        # - 5: jump-if-true: if the first parameter is non-zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
+        elif instruction == "05":
+            if first_mode != '0':
+                firstParameter = test_list[instructionCounter + 1]
+            elif first_mode == '0':
+                firstParameter = test_list[test_list[instructionCounter + 1]]
+            if second_mode != '0':
+                secondParameter = test_list[instructionCounter + 2]
+            elif second_mode == '0':
+                secondParameter = test_list[test_list[instructionCounter + 2]]
+>>>>>>> Stashed changes
 
             if firstParameter != 0:
                 instructionCounter = secondParameter
@@ -124,6 +185,7 @@ def find_number(list):
 
         # - 6: jump-if-false: if the first parameter is zero, it sets the instruction pointer to the value from the second parameter. Otherwise, it does nothing.
         elif instruction == "06":
+<<<<<<< Updated upstream
             if first_mode != '0':  
                 firstParameter = list[instructionCounter + 1]
             if first_mode == '0':
@@ -133,6 +195,16 @@ def find_number(list):
                 secondParameter = list[instructionCounter + 2]
             if second_mode == '0':
                 secondParameter = list[list[instructionCounter + 2]]
+=======
+            if first_mode != '0':
+                firstParameter = test_list[instructionCounter + 1]
+            elif first_mode == '0':
+                firstParameter = test_list[test_list[instructionCounter + 1]]
+            if second_mode != '0':
+                secondParameter = test_list[instructionCounter + 2]
+            elif second_mode == '0':
+                secondParameter = test_list[test_list[instructionCounter + 2]]
+>>>>>>> Stashed changes
 
             if firstParameter == 0:
                 instructionCounter = secondParameter
@@ -142,6 +214,7 @@ def find_number(list):
         # - 7: less than: if the first parameter is less than the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
         elif instruction == "07":
             if first_mode != '0':
+<<<<<<< Updated upstream
                 firstParameter = list[instructionCounter + 1]
             if first_mode == '0':
                 firstParameter = list[list[instructionCounter + 1]]
@@ -155,11 +228,27 @@ def find_number(list):
                 list[resultIndex] = 1
             else:
                 list[resultIndex] = 0
+=======
+                firstParameter = test_list[instructionCounter + 1]
+            elif first_mode == '0':
+                firstParameter = test_list[test_list[instructionCounter + 1]]
+            if second_mode != '0':
+                secondParameter = test_list[instructionCounter + 2]
+            elif second_mode == '0':
+                secondParameter = test_list[test_list[instructionCounter + 2]]
+
+            resultIndex = test_list[instructionCounter + 3]
+            if firstParameter < secondParameter:
+                test_list[resultIndex] = 1
+            else:
+                test_list[resultIndex] = 0
+>>>>>>> Stashed changes
             instructionCounter += 4
 
         # - 8: equals: if the first parameter is equal to the second parameter, it stores 1 in the position given by the third parameter. Otherwise, it stores 0.
         elif instruction == "08":
             if first_mode != '0':
+<<<<<<< Updated upstream
                 firstParameter = list[instructionCounter + 1]
             if first_mode == '0':
                 firstParameter = list[list[instructionCounter + 1]]
@@ -173,10 +262,29 @@ def find_number(list):
                 list[resultIndex] = 1
             else:
                 list[resultIndex] = 0
+=======
+                firstParameter = test_list[instructionCounter + 1]
+            elif first_mode == '0':
+                firstParameter = test_list[test_list[instructionCounter + 1]]
+            if second_mode != '0':
+                secondParameter = test_list[instructionCounter + 2]
+            elif second_mode == '0':
+                secondParameter = test_list[test_list[instructionCounter + 2]]
+
+            resultIndex = test_list[instructionCounter + 3]
+            if firstParameter == secondParameter:
+                test_list[resultIndex] = 1
+            else:
+                test_list[resultIndex] = 0
+>>>>>>> Stashed changes
             instructionCounter += 4
         elif instruction == "99":
             break
     
+<<<<<<< Updated upstream
     print("result:", list[0])
+=======
+    print("result:", test_list[0])
+>>>>>>> Stashed changes
 
 find_number(commands)
