@@ -211,7 +211,7 @@ def main2():
     for x in range(0,594):
         dict_generation(Iterator, dict_all)
     result = insert_and_counting(dict_all, 'shinygold')
-    print('The shiny gold bag contains', result, 'bags')
+    print('The shiny gold bag contains', result, 'bags.')
 
 
 main2()
