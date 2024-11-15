@@ -153,7 +153,6 @@ def read_bags(path: pathlib.Path):
         for line in lines:
             bag = parse_bag_line(line)
             bags[bag.type] = bag
-        f.close()
 
     return bags
 
