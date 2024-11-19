@@ -153,7 +153,8 @@ def equals(start, first_parameter, second_parameter, third_parameter):
 
 
 def relativ_offset(start, first_parameter, offset):
-    return start + 2, offset + working_dict[first_parameter]
+    offset += working_dict[first_parameter]
+    return start + 2, offset
 
 
 def reading_input():
