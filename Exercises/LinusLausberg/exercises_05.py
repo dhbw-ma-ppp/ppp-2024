@@ -1,3 +1,6 @@
+import pathlib
+import os
+
 # PART 1:
 # Here's a sequence of numbers:
 # [35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576]
@@ -17,8 +20,7 @@
 # Please make not of your result in the PR.
 
 # open file, create Iterator and puts the first 25 numbers in a list before, so they can be used in the first calculation
-def preprocess():
-    inputfile = open(r"C:\Users\linus\Documents\GitHub\ppp-2024\data\input_sequence.txt",'r')
+def preprocess(inputfile):
     before_and_goal:list[str]  = []
     for counter in range(0,26):
         number: str = inputfile.readline()
@@ -27,7 +29,13 @@ def preprocess():
             if point != '\n':
                 number_ready = number_ready + point
         before_and_goal.append(number_ready)
-    return inputfile, before_and_goal
+    return before_and_goal
+
+def pathfindernumbers():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    sequence_path = os.path.join(
+    script_dir, "..", "..", "data", "input_sequence.txt")
+    return sequence_path
 
 # trys to sum up two of the Numbers in before to get the wanted Number
 def checking(before_and_goal):
@@ -55,17 +63,19 @@ def move(inputfile, before_and_goal) -> bool:
 
 # just the call of funktions
 def main1():
-    ending_solution: int = 0
-    inputfile, before_and_goal = preprocess()
-    run: bool = True
-    while run:
-        run, solution = checking(before_and_goal)
-        if run:
-            run = move(inputfile, before_and_goal)
+    path = pathfindernumbers()
+    with open(path,'r') as inputfile:
+        ending_solution: int = 0
+        before_and_goal = preprocess(inputfile)
+        run: bool = True
+        while run:
+            run, solution = checking(before_and_goal)
+            if run:
+                run = move(inputfile, before_and_goal)
     ending_solution = solution
     print(ending_solution,'ist die erste Zahl, welche nicht mehr durch zwei Zahlen'
-          ', 25 Stellen voher, berechnert werden kann.')
-    inputfile.close()
+        ', 25 Stellen voher, berechnert werden kann.')
+
     
 
 main1()
@@ -181,14 +191,21 @@ def insert_and_counting(dict_all, search) -> int:
     result += counter_bags_with_bags
     return result
 
+def pathfinderbags():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    sequence_path = os.path.join(
+    script_dir, "..", "..", "data", "input_bags.txt")
+    return sequence_path
+
 # main-programm
 def main2():
+    path = pathfinderbags()
     dict_all = {}
-    inputfileb = open(r'C:\Users\linus\Documents\GitHub\ppp-2024\data\input_bags.txt','r')  
-    for x in range(0,594):
-        dict_generation(dict_all, inputfileb)
-    result = insert_and_counting(dict_all, 'shinygold')
-    print('The shiny gold bag contains', result, 'bags.')
+    with open(path,'r') as inputfileb:
+        for x in range(0,594):
+            dict_generation(dict_all, inputfileb)
+        result = insert_and_counting(dict_all, 'shinygold')
+        print('The shiny gold bag contains', result, 'bags.')
 
 
 main2()
