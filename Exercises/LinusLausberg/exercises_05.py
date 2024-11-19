@@ -1,5 +1,6 @@
 import pathlib
 import os
+import itertools
 
 # PART 1:
 # Here's a sequence of numbers:
@@ -28,7 +29,7 @@ def preprocess(inputfile):
         for point in number:
             if point != '\n':
                 number_ready = number_ready + point
-        before_and_goal.append(number_ready)
+        before_and_goal.append(int(number_ready))
     return before_and_goal
 
 def pathfindernumbers():
@@ -40,11 +41,11 @@ def pathfindernumbers():
 # trys to sum up two of the Numbers in before to get the wanted Number
 def checking(before_and_goal):
     goal: int = int(before_and_goal[25])
-    for counter1 in range(0, 25):
-        for counter2 in range(counter1+1, 25):
-            solution: int = int(before_and_goal[counter1]) + int(before_and_goal[counter2])
-            if solution == goal:
-                return True, 0
+    before = before_and_goal[:-1]
+    for pair in itertools.combinations(before,2):
+        solution: int = sum(pair)
+        if solution == goal:
+            return True, 0
     return False, goal
 
 # moves the list before one position to the right. So the first Item will be deletet and one will e attached. 
@@ -58,7 +59,7 @@ def move(inputfile, before_and_goal) -> bool:
     for point in number:
         if point != '\n':
             number_ready = number_ready + point
-    before_and_goal.append(number_ready)
+    before_and_goal.append(int(number_ready))
     return True
 
 # just the call of funktions
@@ -76,11 +77,8 @@ def main1():
     print(ending_solution,'ist die erste Zahl, welche nicht mehr durch zwei Zahlen'
         ', 25 Stellen voher, berechnert werden kann.')
 
-    
-
 main1()
 #Output:1639024365
-
 
 
 # PART 2:
@@ -111,52 +109,31 @@ main1()
 # For the actual inputs, how many bags are inside your single shiny gold bag?
 # As usual, please list the answer as part of the PR.
 
-    
-
-# reads every line from the file and fills the dict, with every bag as key and his content as value
-def dict_generation(dict_all, inputfileb):
-    raw_row = inputfileb.readline()
-    str_before_contain: str = ''
-    lst_after_contain:list = [] 
-    temp_word: str = ''
-    temp_lst: str = ''
-    temp_sentens: str = ''
-    contain: bool = False
-    for place in raw_row:
-        if contain == False:
-            if place == ' ':
-                if temp_word == 'bag' or temp_word == 'bags' :
-                    temp_word = ''
-                elif temp_word == 'contain':
-                    str_before_contain = temp_lst
-                    temp_word = ''
-                    contain = True
-                    temp_lst = []
-                else:
-                    temp_lst = temp_lst + temp_word
-                    temp_word = ''
+def dict_generation(dict_all, raw_row):
+    bag_inventory_differentiation = raw_row.split('contain')
+    bag: str = bag_inventory_differentiation[0][:-1]
+    bag = bag.replace('bags', '')
+    bag = bag.replace(' ', '')
+    inventory:list = []
+    inventory =''.join(bag_inventory_differentiation[1])
+    if inventory == ' no other bags.\n':
+        inventory = []
+    else:
+        inventory = inventory.replace('bags', '')
+        inventory = inventory.replace('bag', '')
+        inventory = inventory.replace(', ', '')
+        inventory = inventory.split(' ')
+        inventory = inventory[1:-1]
+        for index in range(1, len(inventory) -1, 2):
+            if index <= len(inventory) - 2:
+                element = inventory[index]
+                next_element = inventory[index + 1]
+                element = element + next_element
+                inventory.insert(inventory.index(next_element) + 1, element)
+                del inventory[index:index + 2]
             else:
-                temp_word = temp_word + place 
-        else:
-            if place == ' ' or place == '.' or place == ',':
-                if temp_word == 'bag' or temp_word == 'bags' :
-                    temp_word = ''
-                else:
-                    temp_sentens = temp_sentens + temp_word
-                    temp_word = ''
-                    pass
-            else:
-                try:
-                    int(place)
-                    lst_after_contain.append(temp_sentens)
-                    temp_word = ''
-                    temp_sentens = ''
-                    lst_after_contain.append(place)
-                except ValueError:
-                    temp_word = temp_word + place
-    lst_after_contain.append(temp_sentens)
-    lst_after_contain.pop(0)                
-    dict_all[str(str_before_contain)] = lst_after_contain
+                break
+    dict_all[bag] = inventory
 
 # exchange every bag, which is in the shiny gold bag with his content. 
 # Runs till all bags have no bags in them and return sum of bags in the shiny gold bag
@@ -185,9 +162,8 @@ def insert_and_counting(dict_all, search) -> int:
             dict_all.update({search:content})
     counter: int = 0
     result: int = 0
-    while counter < len(content):
+    for counter in range(0, len(content),2):
         result += int(content[counter])
-        counter += 2
     result += counter_bags_with_bags
     return result
 
@@ -202,11 +178,10 @@ def main2():
     path = pathfinderbags()
     dict_all = {}
     with open(path,'r') as inputfileb:
-        for x in range(0,594):
-            dict_generation(dict_all, inputfileb)
-        result = insert_and_counting(dict_all, 'shinygold')
-        print('The shiny gold bag contains', result, 'bags.')
-
+        for raw_row in inputfileb:
+            dict_generation(dict_all, raw_row)
+    result = insert_and_counting(dict_all, 'shinygold')
+    print('The shiny gold bag contains', result, 'bags.')
 
 main2()
 #Output: 6260
