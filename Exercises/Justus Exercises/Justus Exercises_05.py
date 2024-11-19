@@ -4,7 +4,7 @@
 def find_invalid_number(sequence, preamble_length):
     for i in range(preamble_length, len(sequence)):
         preamble = sequence[i - preamble_length:i]
-        valid = any(sequence[i] == x + y for x in preamble for y in preamble)
+        valid = any(sequence[i] == x + y for x in preamble for y in preamble if x != y) #<- change if to be based on actual position of elements not their value 
         if not valid:
             return sequence[i]
     return None
