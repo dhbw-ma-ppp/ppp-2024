@@ -50,7 +50,7 @@ def make_param_list(memory, pointer, parameter_num, offset):        #calculate p
             output.append(memory[pointer+i])    
         elif (memory[pointer] // (10 * 10 ** i) % 10) == 1:      #parameter in immediate mode    
             output.append(pointer+i)
-        if (memory[pointer] // (10 * 10 ** i) % 10) == 2:        #parameter in position mode
+        if (memory[pointer] // (10 * 10 ** i) % 10) == 2:        #parameter in relative mode
             output.append(memory[pointer+i] + offset) 
     return output
 
