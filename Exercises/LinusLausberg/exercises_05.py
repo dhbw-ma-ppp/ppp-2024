@@ -16,17 +16,6 @@
 # sum of two numbers out of the 25 numbers before it.
 # Please make not of your result in the PR.
 
-
-class ElementsOfDocumentIterator:
-    def __init__(self, inputfile):
-        self.inputfile = inputfile
-
-    def __iter__(self):
-        return self
-    
-    def __next__(self):
-        return self.inputfile.readline()
-
 # open file, create Iterator and puts the first 25 numbers in a list before, so they can be used in the first calculation
 def preprocess():
     inputfile = open(r"C:\Users\linus\Documents\GitHub\ppp-2024\data\input_sequence.txt",'r')
