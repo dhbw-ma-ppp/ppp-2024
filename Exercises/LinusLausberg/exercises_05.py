@@ -29,54 +29,54 @@ class ElementsOfDocumentIterator:
 
 # open file, create Iterator and puts the first 25 numbers in a list before, so they can be used in the first calculation
 def preprocess():
-    inputfile = open(r'C:\Users\linus\Documents\GitHub\ppp-2024\data\input_sequence.txt','r')
-    Elements = iter(ElementsOfDocumentIterator(inputfile))
-    before:list[str]  = []
+    inputfile = open(r"C:\Users\linus\Documents\GitHub\ppp-2024\data\input_sequence.txt",'r')
+    before_and_goal:list[str]  = []
     for counter in range(0,26):
-        number: str = next(Elements, inputfile)
+        number: str = inputfile.readline()
         number_ready: str = ''
         for point in number:
             if point != '\n':
                 number_ready = number_ready + point
-        before.append(number_ready)
-    return Elements, inputfile, before
+        before_and_goal.append(number_ready)
+    return inputfile, before_and_goal
 
 # trys to sum up two of the Numbers in before to get the wanted Number
-def checking(before):
-    goal: int = int(before[25])
+def checking(before_and_goal):
+    goal: int = int(before_and_goal[25])
     for counter1 in range(0, 25):
         for counter2 in range(counter1+1, 25):
-            solution: int = int(before[counter1]) + int(before[counter2])
+            solution: int = int(before_and_goal[counter1]) + int(before_and_goal[counter2])
             if solution == goal:
                 return True, 0
     return False, goal
 
 # moves the list before one position to the right. So the first Item will be deletet and one will e attached. 
 # If end of file is reached, it will return False.
-def move(Elements, inputfile, before) -> bool:
-    before.pop(0)
-    number = next(Elements, inputfile)
-    if type(number) == ElementsOfDocumentIterator:
+def move(inputfile, before_and_goal) -> bool:
+    before_and_goal.pop(0)
+    number = inputfile.readline()
+    if number == '':
         return False
     number_ready: str = ''
     for point in number:
         if point != '\n':
             number_ready = number_ready + point
-    before.append(number_ready)
+    before_and_goal.append(number_ready)
     return True
 
 # just the call of funktions
 def main1():
     ending_solution: int = 0
-    inputfile, Elements, before = preprocess()
+    inputfile, before_and_goal = preprocess()
     run: bool = True
     while run:
-        run, solution = checking(before)
+        run, solution = checking(before_and_goal)
         if run:
-            run = move(Elements, inputfile, before)
+            run = move(inputfile, before_and_goal)
     ending_solution = solution
     print(ending_solution,'ist die erste Zahl, welche nicht mehr durch zwei Zahlen'
           ', 25 Stellen voher, berechnert werden kann.')
+    inputfile.close()
     
 
 main1()
@@ -112,22 +112,11 @@ main1()
 # For the actual inputs, how many bags are inside your single shiny gold bag?
 # As usual, please list the answer as part of the PR.
 
-
-
-class BagsInDocumentIterator:
-    def __init__(self, inputfileb):
-        self.inputfileb = inputfileb
-
-    def __iter__(self):
-        return self
-    
-    def __next__(self):
-        return self.inputfileb.readline()
     
 
 # reads every line from the file and fills the dict, with every bag as key and his content as value
-def dict_generation(Iterator, dict_all):
-    raw_row = next(Iterator)
+def dict_generation(dict_all, inputfileb):
+    raw_row = inputfileb.readline()
     str_before_contain: str = ''
     lst_after_contain:list = [] 
     temp_word: str = ''
@@ -207,9 +196,8 @@ def insert_and_counting(dict_all, search) -> int:
 def main2():
     dict_all = {}
     inputfileb = open(r'C:\Users\linus\Documents\GitHub\ppp-2024\data\input_bags.txt','r')  
-    Iterator = iter(BagsInDocumentIterator(inputfileb))
     for x in range(0,594):
-        dict_generation(Iterator, dict_all)
+        dict_generation(dict_all, inputfileb)
     result = insert_and_counting(dict_all, 'shinygold')
     print('The shiny gold bag contains', result, 'bags.')
 
