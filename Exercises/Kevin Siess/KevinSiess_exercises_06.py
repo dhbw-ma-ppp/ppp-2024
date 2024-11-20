@@ -32,123 +32,119 @@ with open('data/input_memory_01.txt') as file:
 
 def intcode_process(memory):
 
-    pointer = 0   # postion of pointer
-    relative_offset = 0 #offset start
+    pointer = 0   # position of pointer
+    relative_offset = 0  # offset start
 
-    def get_instruction(instruction):    #get instruction for opcode & mode
+    def get_instruction(instruction):
         opcode = instruction % 100
         param_mode1 = (instruction // 100) % 10
         param_mode2 = (instruction // 1000) % 10
         param_mode3 = (instruction // 10000) % 10
         return opcode, param_mode1, param_mode2, param_mode3
 
-    def get_pointer_position(pointer):   # update position of pointer
-        pos1 = memory[pointer + 1] 
-        pos2 = memory[pointer + 2] 
-        pos3 = memory[pointer + 3] 
-        return pos1, pos2, pos3
-    
     def check_memoryspace(memory, index):
         if index >= len(memory):
             memory.extend([0] * (index - len(memory) + 1))
+    
+    def get_pointer_position(pointer):
+        check_memoryspace(memory, pointer + 3)
+        pos1 = memory[pointer + 1]
+        pos2 = memory[pointer + 2]
+        pos3 = memory[pointer + 3]
+        return pos1, pos2, pos3
 
-    def check_mode(pos, mode, relative_offset):    # check mode
-        if mode == 0: # position-mode
+    def check_mode(pos, mode, relative_offset):
+        if mode == 0:  # position-mode
             check_memoryspace(memory, pos)
             return memory[pos]
-        
-        elif mode == 1:  # immidiate-mode
+        elif mode == 1:  # immediate-mode
             return pos
-        
         elif mode == 2:  # relative-mode
             check_memoryspace(memory, pos + relative_offset)
             return memory[pos + relative_offset]
-        
         else:
             raise ValueError(f"Invalid Mode: {mode}")
 
     while True:
-        #print(f"Pointer: {pointer}, Instruction: {memory[pointer]}, Relative Offset: {relative_offset}")
-
         instruction = memory[pointer]
-
         opcode, param_mode1, param_mode2, param_mode3 = get_instruction(instruction)
-
         pos1, pos2, pos3 = get_pointer_position(pointer)
 
         match opcode:
 
-            case 99:  # end of programm
+            case 99:  # end of program
                 return memory
 
-            case 1:  # +
+            case 1:  # addition
+                if param_mode3 == 2:
+                    pos3 += relative_offset
                 check_memoryspace(memory, pos3)
                 memory[pos3] = check_mode(pos1, param_mode1, relative_offset) + check_mode(pos2, param_mode2, relative_offset)
                 pointer += 4
 
-            case 2:  # *
+            case 2:  # multiplication
+                if param_mode3 == 2:
+                    pos3 += relative_offset
                 check_memoryspace(memory, pos3)
                 memory[pos3] = check_mode(pos1, param_mode1, relative_offset) * check_mode(pos2, param_mode2, relative_offset)
                 pointer += 4
 
             case 3:  # input
+                if param_mode1 == 2:
+                    pos1 += relative_offset
                 check_memoryspace(memory, pos1)
-                while True:  
+                while True:
                     input_value = input("Input a whole Number: ")
-                    if input_value.isdigit():
+                    if input_value.lstrip('-').isdigit():  # Allow negative numbers
                         memory[pos1] = int(input_value)
                         break
-
                     else:
                         print(f"Invalid Input: {input_value}. Please enter a whole number.\n")
-
                 pointer += 2
 
             case 4:  # output
-                print(f"""Index: {pos1}
-Offset: {relative_offset}
-Value: {check_mode(pos1, param_mode1, relative_offset)}\n""")
+                print(f"Value: {check_mode(pos1, param_mode1, relative_offset)}")
                 pointer += 2
 
-            case 5:  # jumpf-if-!=0
+            case 5:  # jump-if-true
                 if check_mode(pos1, param_mode1, relative_offset) != 0:
                     pointer = check_mode(pos2, param_mode2, relative_offset)
-                    
                 else:
                     pointer += 3
 
-            case 6:  # jumpf-if-==0
+            case 6:  # jump-if-false
                 if check_mode(pos1, param_mode1, relative_offset) == 0:
                     pointer = check_mode(pos2, param_mode2, relative_offset)
-
                 else:
                     pointer += 3
 
-            case 7:  # <
+            case 7:  # less than
+                if param_mode3 == 2:
+                    pos3 += relative_offset
                 check_memoryspace(memory, pos3)
                 if check_mode(pos1, param_mode1, relative_offset) < check_mode(pos2, param_mode2, relative_offset):
                     memory[pos3] = 1
-
                 else:
                     memory[pos3] = 0
                 pointer += 4
 
-            case 8:  # ==
+            case 8:  # equals
+                if param_mode3 == 2:
+                    pos3 += relative_offset
                 check_memoryspace(memory, pos3)
                 if check_mode(pos1, param_mode1, relative_offset) == check_mode(pos2, param_mode2, relative_offset):
                     memory[pos3] = 1
-                
                 else:
                     memory[pos3] = 0
                 pointer += 4
 
-            case 9: # offset
-                check_memoryspace(memory, pos1)
-                relative_offset = relative_offset + memory[pos1]
+            case 9:  # adjust relative base
+                relative_offset += check_mode(pos1, param_mode1, relative_offset)
                 pointer += 2
 
             case _:  # Error
-                raise ValueError(f"Ungültiger Opcode {opcode} an Position {pointer} gefunden")
+                raise ValueError(f"Invalid Opcode {opcode} found at position {pointer}")
 
 result = intcode_process(commands)
 print("First Value in Memory:", result[0])
+print(result)
