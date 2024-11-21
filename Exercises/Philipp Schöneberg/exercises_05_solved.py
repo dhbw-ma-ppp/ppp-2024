@@ -1,3 +1,4 @@
+from collections import defaultdict
 import itertools
 import re
 
@@ -31,8 +32,12 @@ class CheckSumIterator0:
 
 
 class CheckSumIterator1:
+    def __init__(self):
+        self.input_file: str
+        self.input_file = "input_sequence.txt"
+
     def __iter__(self):
-        with open("input_sequence.txt", "r") as f:
+        with open(self.input_file, "r") as f:
             for line in f:
                 yield int(line.strip())
 
@@ -43,26 +48,11 @@ def check_sum(my_iterator, amount_preceding_numbers: int) -> int | None:
     input and computes whether each number in the iterator can be expressed as
     the sum of two of the given amount of numbers before it.
     """
-    def add_to_preceding_numbers(elem: int) -> None:
-        """
-        This function expects one parameter, called the element. The function
-        then checks if the given element is already used in the
-        preceding_numbers dictionary. If so, the function increments the value
-        stored in the dictionary on the key corresponding to the element.
-        Otherwise, it creates a new key corresponding to the element and
-        assigns the value one to it.
-        """
-        if elem in preceding_numbers:
-            preceding_numbers[elem] += 1
-        else:
-            preceding_numbers[elem] = 1
-
     def delete_from_preceding_numbers() -> None:
         """
-        This function expects one parameter, which will be referred to as the
-        element. The function then checks whether the value stored in the
-        dictionary on the key corresponding to the element is greater than one.
-        If so, it decrements the value by one. Otherwise it deletes the entry.
+        This function checks if the value of the first key added to the
+        preceding_numbers dictionary is greater than one. If so, it decrements
+        the value by one. Otherwise, it deletes the entry.
         """
         if preceding_numbers[number_window[0]] > 1:
             preceding_numbers[number_window[0]] -= 1
@@ -90,11 +80,11 @@ def check_sum(my_iterator, amount_preceding_numbers: int) -> int | None:
             return True
 
     number_window: list[int] = []
-    preceding_numbers: dict[int, int] = {}
+    preceding_numbers: defaultdict[int, int] = defaultdict(int)
 
     for elem in itertools.islice(my_iterator, 0, amount_preceding_numbers):
         number_window.append(elem)
-        add_to_preceding_numbers(elem)
+        preceding_numbers[elem]
 
     for elem in itertools.islice(my_iterator, amount_preceding_numbers, None):
         for j in preceding_numbers.items():
@@ -102,7 +92,7 @@ def check_sum(my_iterator, amount_preceding_numbers: int) -> int | None:
                 delete_from_preceding_numbers()
                 number_window.pop(0)
                 number_window.append(elem)
-                add_to_preceding_numbers(elem)
+                preceding_numbers[elem] += 1
                 break
         else:
             return elem
@@ -164,8 +154,12 @@ class BagIterator0:
 
 
 class BagIterator1:
+    def __init__(self):
+        self.input_file: str
+        self.input_file = "input_bags.txt"
+
     def __iter__(self):
-        with open("input_bags.txt", "r") as f:
+        with open(self.input_file, "r") as f:
             for line in f:
                 yield line.strip()
 
@@ -189,22 +183,20 @@ def count_bags(my_iterator) -> int:
         if bag in bags:
             new_bags: list[str] = re.split(r',', bags[bag])
             for elem in new_bags:
-                anzahl: int = re.findall(r'\d+', elem)
-                if anzahl:
-                    anzahl = int(anzahl[0])
+                amount: int = re.findall(r'\d+', elem)
+                if amount:
+                    amount: int
+                    amount = int(amount[0])
                     elem = re.findall(r'[a-zA-Z]+', elem)
                     elem = elem[0]
-                    for i in range(anzahl):
+                    for i in range(amount):
                         bag_counter += 1
                         bag_search(elem)
 
     bags: dict[str, str] = {}
     bag_counter: int = 0
     for line in my_iterator:
-        line = line.replace(" ", "")
-        line = line.replace(".", "")
-        line = line.replace("bags", "")
-        line = line.replace("bag", "")
+        line = line.replace(" ", "").replace(".", "").replace("bags", "").replace("bag", "")
         line_lst = re.split(r'contain', line)
         bags[line_lst[0]] = line_lst[1]
     bag_search("shinygold")
