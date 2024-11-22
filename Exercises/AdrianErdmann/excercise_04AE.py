@@ -53,6 +53,9 @@
 # Please take note of that number in your PR, so I don't need to run all the files myself :)
 
 def parameterWithMode(memory, i, mode):
+    """Extracts a parameter with applied mode.\n
+    Removes the last element of mode for easier continuus calls.
+    """
     parameter = memory[i]
     if len(mode) == 0: # catch if no mode is given
         return memory[parameter]
@@ -79,6 +82,8 @@ def userInput(memory, i):
     memory[memory[i + 1]] = user_in
 
 def jumpIf(memory, i_after_condition, condition, mode):
+    """Returns the correct next memory adress after a jump.
+    A jump is executed if contition is True."""
     if condition:
         if len(mode) == 0 or mode.pop() == 0:
             return memory[memory[i_after_condition]]
@@ -97,6 +102,7 @@ def operation2(memory, i, mode, func):
     memory[memory[i + 3]] = result
 
 def compute(memory):
+    """Executes the memory after the given rules."""
     i = 0 # i gives position of the opcode for the current execution
     next_opcode, mode = memory[i] % 100, list(int(x) for x in str(memory[i] // 100))
     while next_opcode != 99:
