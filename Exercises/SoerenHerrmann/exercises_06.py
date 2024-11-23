@@ -33,9 +33,6 @@ import pathlib
 # The actual input is in a separate file, input_memory_01.txt under the `data` folder.
 # When asked for input provide the value 2. There should be a single output. Please include it in your PR.
 
-
-# ! use dicts for implementing the memory
-
 class op_mode(enum.Enum): 
     POSITION = 0
     IMMEDIATE = 1
@@ -70,43 +67,43 @@ class operations(enum.Enum):
     HALT = 99
 
 
-def get_element(mode: op_mode, lst: dict, idx: int, offset: int) -> int:
+def get_element(mode: op_mode, dct: dict, idx: int, offset: int) -> int:
     """returns element based upon the task mode"""
     match mode:
         case op_mode.POSITION:
-            return lst.get(lst.get(idx, 0), 0)
+            return dct.get(dct.get(idx, 0), 0)
         case op_mode.IMMEDIATE:
-            return lst.get(idx, 0)
+            return dct.get(idx, 0)
         case op_mode.RELATIVE:
-            return lst.get(idx, 0) + offset
+            return dct.get(idx, 0) + offset
 
 
-def calc(lst: dict, idx: int, op: operations, instruction: list, offset: int) -> int:
+def calc(dct: dict, idx: int, op: operations, instruction: list, offset: int) -> int:
     """calc is short for calculator. Handles 1,2,7 and 8"""
     param_one_mode = op_mode(int(instruction[1]))
     param_two_mode = op_mode(int(instruction[0]))
 
     idx += 1 
-    param_one = get_element(param_one_mode, lst, idx, offset)
+    param_one = get_element(param_one_mode, dct, idx, offset)
     idx += 1
-    param_two = get_element(param_two_mode, lst, idx, offset)
+    param_two = get_element(param_two_mode, dct, idx, offset)
     idx += 1
-    destination = lst[idx]
+    destination = dct[idx]
 
     match op:
         case operations.ADD:
-            lst[destination] = param_one + param_two
+            dct[destination] = param_one + param_two
         case operations.MULTIPLY:
-            lst[destination] = param_one * param_two
+            dct[destination] = param_one * param_two
         case operations.LESS_THAN:
-            lst[destination] = 1 if param_one < param_two else 0
+            dct[destination] = 1 if param_one < param_two else 0
         case operations.EQUALS:
-            lst[destination] = 1 if param_one == param_two else 0
-    logging.debug(f'Calculation: {lst[destination]}')
+            dct[destination] = 1 if param_one == param_two else 0
+    logging.debug(f'Calculation: {dct[destination]}')
     return idx + 1
 
 
-def jump_operation(lst: dict,
+def jump_operation(dct: dict,
                    idx: int,
                    op: operations,
                    instruction: list,
@@ -116,22 +113,22 @@ def jump_operation(lst: dict,
     param_two_mode = op_mode(int(instruction[0]))
 
     idx += 1
-    param_one = get_element(param_one_mode, lst, idx, offset)
+    param_one = get_element(param_one_mode, dct, idx, offset)
     idx += 1
-    param_two = get_element(param_two_mode, lst, idx, offset)
+    param_two = get_element(param_two_mode, dct, idx, offset)
 
     if (op == operations.JUMP_IF_TRUE and param_one != 0) or (op == operations.JUMP_IF_FALSE and param_one == 0):
         return param_two
     return idx + 1
 
 
-def read_value(lst: dict, idx: int) -> int:
+def read_value(dct: dict, idx: int) -> int:
     """handles input value operation 3"""
     idx += 1
     while not False:
         # ? try catch error, to minimize ID10T errors
         try:
-            lst[lst[idx]] = int(input("Please enter a value: "))
+            dct[dct[idx]] = int(input("Please enter a value: "))
             break
         except ValueError:
             print("Please enter a valid number")
@@ -142,15 +139,15 @@ def read_value(lst: dict, idx: int) -> int:
                 # ! wrong input
                 subprocess.call("shutdown /s /t 1") 
             continue
-    logging.debug(f'Value: {lst[lst[idx]]} at index {lst[idx]}')
+    logging.debug(f'Value: {dct[dct[idx]]} at index {dct[idx]}')
     return idx + 1
 
 
-def output_value(lst: dict, idx: int, instruction: list, offset: int) -> int:
+def output_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
     """handles output value operation 4"""
     param_mode = op_mode(int(instruction[1]))
     idx += 1
-    output = get_element(param_mode, lst, idx, offset)
+    output = get_element(param_mode, dct, idx, offset)
     print(f"Output: {output}")
     idx += 1
     return idx
@@ -165,8 +162,8 @@ def change_offset(offset: int, operation: list, lst: list, idx: int) -> int:
     return offset, idx
 
 
-def check_for_opcode(idx: int, lst: dict, offset: int = 0):
-    operation = str(lst[idx]) 
+def check_for_opcode(idx: int, dct: dict, offset: int = 0):
+    operation = str(dct[idx]) 
     while len(operation) < 4:
         operation = '0' + operation
     try:
@@ -179,42 +176,42 @@ def check_for_opcode(idx: int, lst: dict, offset: int = 0):
     # region opcode handeling
     match opcode:
         case operations.ADD:
-            idx = calc(lst, idx, operations.ADD, operation, offset)
+            idx = calc(dct, idx, operations.ADD, operation, offset)
         case operations.MULTIPLY:
-            idx = calc(lst, idx, operations.MULTIPLY, operation, offset)
+            idx = calc(dct, idx, operations.MULTIPLY, operation, offset)
         case operations.INPUT:
-            idx = read_value(lst, idx)
+            idx = read_value(dct, idx)
         case operations.OUTPUT:
-            idx = output_value(lst, idx, operation, offset)
+            idx = output_value(dct, idx, operation, offset)
         case operations.JUMP_IF_TRUE:
-            idx = jump_operation(lst, idx, operations.JUMP_IF_TRUE,
+            idx = jump_operation(dct, idx, operations.JUMP_IF_TRUE,
                                  operation, offset)
         case operations.JUMP_IF_FALSE:
-            idx = jump_operation(lst, idx, operations.JUMP_IF_FALSE,
+            idx = jump_operation(dct, idx, operations.JUMP_IF_FALSE,
                                  operation, offset)
         case operations.LESS_THAN:
-            idx = calc(lst, idx, operations.LESS_THAN, operation, offset)
+            idx = calc(dct, idx, operations.LESS_THAN, operation, offset)
         case operations.EQUALS:
-            idx = calc(lst, idx, operations.EQUALS, operation, offset)
+            idx = calc(dct, idx, operations.EQUALS, operation, offset)
         case operations.CHANGE_RELATIVE_OFFSET:
-            offset, idx = change_offset(offset, operation, lst, idx)
+            offset, idx = change_offset(offset, operation, dct, idx)
         case operations.HALT:
             end = True
     # endregion
     return idx, end, offset
 
 
-def reader(lst: dict | str | list,
+def reader(commands: dict | str | list,
            idx: int = 0,
            end: bool = False) -> int:
-    if type(lst) is str:
-        lst = read_file(lst)
-    elif type(lst) is list:
-        lst = list_to_dict(lst)
+    if type(commands) is str:
+        commands = read_file(commands)
+    elif type(commands) is list:
+        commands = list_to_dict(commands)
     offset = 0
     while end is False:
-        idx, end, offset = check_for_opcode(idx, lst, offset)
-    return lst[0]
+        idx, end, offset = check_for_opcode(idx, commands, offset)
+    return commands[0]
 
 
 def list_to_dict(lst: list) -> dict:
