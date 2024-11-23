@@ -75,8 +75,7 @@ def get_element(mode: op_mode, dct: dict, idx: int, offset: int) -> int:
         case op_mode.IMMEDIATE:
             return dct.get(idx, 0)
         case op_mode.RELATIVE:
-            return dct.get(idx, 0) + offset
-
+            return dct.get(dct.get(idx, 0) + offset, 0)
 
 def calc(dct: dict, idx: int, op: operations, instruction: list, offset: int) -> int:
     """calc is short for calculator. Handles 1,2,7 and 8"""
@@ -88,8 +87,8 @@ def calc(dct: dict, idx: int, op: operations, instruction: list, offset: int) ->
     idx += 1
     param_two = get_element(param_two_mode, dct, idx, offset)
     idx += 1
-    destination = dct[idx]
-
+    write_mode = op_mode(int(instruction[2]))
+    destination = dct.get(idx, 0) + (offset if write_mode == op_mode.RELATIVE else 0)
     match op:
         case operations.ADD:
             dct[destination] = param_one + param_two
@@ -122,13 +121,15 @@ def jump_operation(dct: dict,
     return idx + 1
 
 
-def read_value(dct: dict, idx: int) -> int:
+def read_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
     """handles input value operation 3"""
     idx += 1
-    while not False:
-        # ? try catch error, to minimize ID10T errors
+    param_mode = op_mode(int(instruction[2]))
+    destination = get_element(param_mode, dct, idx, offset)
+    # ? try catch error, to minimize ID10T errors
+    while True:
         try:
-            dct[dct[idx]] = int(input("Please enter a value: "))
+            dct[destination] = int(input("Please enter a value: "))
             break
         except ValueError:
             print("Please enter a valid number")
@@ -138,8 +139,7 @@ def read_value(dct: dict, idx: int) -> int:
                 # ! additionaly punish windows users for using Windows and
                 # ! wrong input
                 subprocess.call("shutdown /s /t 1") 
-            continue
-    logging.debug(f'Value: {dct[dct[idx]]} at index {dct[idx]}')
+    logging.debug(f'Value: {dct[destination]} at index {destination}')
     return idx + 1
 
 
@@ -153,10 +153,10 @@ def output_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
     return idx
 
 
-def change_offset(offset: int, operation: list, lst: list, idx: int) -> int:
-    operation = op_mode(int(operation[1]))
+def change_offset(offset: int, instruction: list, dct: dict, idx: int) -> int:
+    param_mode = op_mode(int(instruction[1]))
     idx += 1
-    param_one: int = get_element(operation, lst, idx, offset)
+    param_one: int = get_element(param_mode, dct, idx, offset)
     offset += param_one
     idx += 1
     return offset, idx
@@ -169,7 +169,7 @@ def check_for_opcode(idx: int, dct: dict, offset: int = 0):
     try:
         opcode = operations(int(operation) % 100)
     except ValueError:
-        logging.error(f'Invalid opcode: {opcode} at index {idx}')
+        logging.error(f'Invalid opcode: code at index {idx}')
         return False, 0, offset
     logging.debug(f'Current opcode: {opcode}')
     end = False
@@ -180,7 +180,7 @@ def check_for_opcode(idx: int, dct: dict, offset: int = 0):
         case operations.MULTIPLY:
             idx = calc(dct, idx, operations.MULTIPLY, operation, offset)
         case operations.INPUT:
-            idx = read_value(dct, idx)
+            idx = read_value(dct, idx, operation, offset)
         case operations.OUTPUT:
             idx = output_value(dct, idx, operation, offset)
         case operations.JUMP_IF_TRUE:
@@ -226,9 +226,8 @@ def list_to_dict(lst: list) -> dict:
 def read_file(path: str) -> dict:
     """reads the input file and returns the needed dict"""
     with open(path, "r") as f:
-        input = f.readline()
-        input = input.split(",")
-    input = list_to_dict(input)
+        input = f.read().strip().split(",")
+    input = list_to_dict([int(i) for i in input])
     return input
 
 
@@ -239,4 +238,7 @@ sequence_path = os.path.join(
 
 print(Fore.LIGHTGREEN_EX + f'-----\nFinal output of the command: {reader(sequence_path)}\n-----')
 print(Fore.RESET)
-# test_list = [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]
+
+def test_int_computer():
+    test_list = [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]
+    assert reader(test_list) == 109
