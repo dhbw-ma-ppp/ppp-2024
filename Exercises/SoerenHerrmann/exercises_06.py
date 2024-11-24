@@ -213,6 +213,8 @@ def check_for_opcode(idx: int, dct: dict, offset: int = 0):
 def reader(commands: dict | str | list,
            idx: int = 0,
            end: bool = False) -> int:
+    """reads the commands and executes and also decides how
+    to handle the input since it accepts dict, str and list"""
     if type(commands) is str:
         commands = read_file(commands)
     elif type(commands) is list:
