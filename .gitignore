@@ -163,3 +163,5 @@ cython_debug/
 
 # apple synching file 
 .DS_Store
+# vscode settings folder, generated for testing 
+.vscode

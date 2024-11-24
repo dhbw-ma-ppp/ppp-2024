@@ -29,7 +29,7 @@ import subprocess
 # Here is a short program to test your implementation:
 #   [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99] should output a copy of itself
 #   
-# The actual input is in a separate file, input_memory_01.txt under the `data` folder.
+# The actual input is in a separate file, input_memory_01.txt under the data folder.
 # When asked for input provide the value 2. There should be a single output. Please include it in your PR.
 
 
@@ -77,11 +77,11 @@ def get_element(mode: op_mode, dct: dict, idx: int, offset: int) -> int:
         case op_mode.RELATIVE:
             return dct.get(dct.get(idx, 0) + offset, 0)
 
+
 def calc(dct: dict, idx: int, op: operations, instruction: list, offset: int) -> int:
     """calc is short for calculator. Handles 1,2,7 and 8"""
-    param_one_mode = op_mode(int(instruction[1]))
-    param_two_mode = op_mode(int(instruction[0]))
-
+    param_one_mode = op_mode(int(instruction[0]))
+    param_two_mode = op_mode(int(instruction[1]))
     idx += 1 
     param_one = get_element(param_one_mode, dct, idx, offset)
     idx += 1
@@ -108,8 +108,8 @@ def jump_operation(dct: dict,
                    instruction: list,
                    offset: int) -> int:
     """handles the jump operations 5 and 6"""
-    param_one_mode = op_mode(int(instruction[1]))
-    param_two_mode = op_mode(int(instruction[0]))
+    param_one_mode = op_mode(int(instruction[0]))
+    param_two_mode = op_mode(int(instruction[1]))
 
     idx += 1
     param_one = get_element(param_one_mode, dct, idx, offset)
@@ -123,17 +123,17 @@ def jump_operation(dct: dict,
 
 def write_value(dct: dict, idx: int, mode: op_mode, offset: int, input_value: int) -> int:
     match mode:
-        case op_mode.POSITION:
-            dct[idx] = input_value
         case op_mode.RELATIVE:
-            dct[idx + offset] = input_value
+            dct[dct[idx] + offset] = input_value
+        case _:
+            dct[dct[idx]] = input_value
     return idx + 1, dct
 
 
 def read_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
     """handles input value operation 3"""
     idx += 1
-    param_mode = op_mode(int(instruction[2]))
+    param_mode = op_mode(int(instruction[0]))
     # ? try catch error, to minimize ID10T errors
     while True:
         try:
@@ -143,17 +143,17 @@ def read_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
         except ValueError:
             print("Please enter a valid number")
             # ! Punishes the user for wrong input
-            time.sleep(random.randint(9999, 999999)) 
+            time.sleep(random.randint(9999, 999999))
             if platform == "win32":
                 # ! additionaly punish windows users for using Windows and
                 # ! wrong input
-                subprocess.call("shutdown /s /t 1") 
+                subprocess.call("shutdown /s /t 1")
     return idx, dct
 
 
 def output_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
     """Handles output value operation (opcode 4)."""
-    param_mode = op_mode(int(instruction[1]))
+    param_mode = op_mode(int(instruction[0]))
     idx += 1
     output = get_element(param_mode, dct, idx, offset)
     print(f"Opcode 4 - Accessed Memory: {dct.get(idx)} | Output Value: {output}")  # Debug statement
@@ -162,7 +162,7 @@ def output_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
 
 
 def change_offset(offset: int, instruction: list, dct: dict, idx: int) -> int:
-    param_mode = op_mode(int(instruction[1]))
+    param_mode = op_mode(int(instruction[0]))
     idx += 1
     param_one: int = get_element(param_mode, dct, idx, offset)
     offset += param_one
@@ -172,10 +172,11 @@ def change_offset(offset: int, instruction: list, dct: dict, idx: int) -> int:
 
 def check_for_opcode(idx: int, dct: dict, offset: int = 0):
     operation = str(dct[idx])
-    while len(operation) < 4:
+    while len(operation) < 6:
         operation = '0' + operation
     try:
         opcode = operations(int(operation) % 100)
+        operation = operation[-3:-6:-1]
     except ValueError:
         logging.error(f'Invalid opcode: code at index {idx}')
         return False, 0, offset
@@ -225,7 +226,7 @@ def reader(commands: dict | str | list,
 def list_to_dict(lst: list) -> dict:
     """converts list to a dictionary with values from the list and 
     enumerated keys e.g. [10,20,30,40] -> {0: 10, 1: 20, 2: 30, 3: 40}"""
-    goal = {} 
+    goal = {}
     goal = {index: value for index, value in enumerate(lst)}
     return goal
 
@@ -252,4 +253,51 @@ print(Fore.RESET)
 def test_int_computer():
     test_list = [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]
     assert reader(test_list) == 109
+
+
+def test_addition():
+    test_list = [1101, 5, 10, 0, 99]
+    assert reader(test_list) == 15
+
+
+def test_multiplication():
+    test_list = [1102, 5, 10, 0, 99]
+    assert reader(test_list) == 50
+
+
+def test_input_output(monkeypatch):
+    test_list = [3, 0, 4, 0, 99]
+    monkeypatch.setattr('builtins.input', lambda _: '42')
+    assert reader(test_list) == 42
+
+
+def test_jump_if_true():
+    test_list = [1105, 1, 4, 99, 1101, 0, 0, 0, 99]
+    assert reader(test_list) == 0
+
+
+def test_jump_if_false():
+    test_list = [1106, 0, 4, 99, 1101, 0, 0, 0, 99]
+    assert reader(test_list) == 0
+
+
+def test_less_than():
+    test_list = [1107, 1, 2, 0, 99]
+    assert reader(test_list) == 1
+
+
+def test_equals():
+    test_list = [1108, 2, 2, 0, 99]
+    assert reader(test_list) == 1
+
+
+def test_change_relative_offset():
+    test_list = [109, 5, 204, -5, 99]
+    assert reader(test_list) == 109
+
+
+def test_list_to_dict():
+    test_list = [10, 20, 30, 40]
+    expected_dict = {0: 10, 1: 20, 2: 30, 3: 40}
+    assert list_to_dict(test_list) == expected_dict
 # endregion
