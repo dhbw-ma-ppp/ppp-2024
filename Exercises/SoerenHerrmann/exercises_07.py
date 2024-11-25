@@ -6,6 +6,7 @@ import time
 import random
 from sys import platform
 import subprocess
+import matplotlib.pyplot as plt
 # For this weeeks exercise you again need to add a feature to your existing simulated computer:
 
 # - The computer needs to implement memory much /larger/ than the set of initial commands.
@@ -66,6 +67,53 @@ class operations(enum.Enum):
     CHANGE_RELATIVE_OFFSET = 9
     HALT = 99
 
+class tiles(enum.Enum):
+    EMPTY = 0
+    WALL = 1
+    BLOCK = 2
+    PADDLE = 3
+    BALL = 4
+
+# * My first programming language was Java, so there is always a voice in my head calling for classes, enums, etc.
+# * I am sorry for the overengineering, but I had to do it.
+# * I hope you can forgive me for this.
+class triplet():
+    def __init__(self, x: int, y: int, info: int) -> None:
+        self.x = int(x) 
+        self.y = int(y)
+        self.info = info
+
+triplet_lst = []
+placeholder = []
+
+    # Initialize the plot
+fig, ax = plt.subplots()
+ax.set_aspect('equal')
+ax.set_xlim(0, 43)
+ax.set_ylim(0, 30)
+
+    # Define colors for each tile type
+colors = {
+    tiles.EMPTY: 'white',
+    tiles.WALL: 'black',
+    tiles.BLOCK: 'blue',
+    tiles.PADDLE: 'green',
+    tiles.BALL: 'red'
+}
+score = 0
+
+def draw_tile(trplt: triplet):
+    global score
+    print(trplt.x, trplt.y, trplt.info)
+    if trplt.x == -1 and trplt.y == 0:
+        score = trplt.info
+        return
+    rect = plt.Rectangle((trplt.x, trplt.y), 1, 1, color=colors[tiles(trplt.info)])
+    ax.set_title(f'Score: {score}')
+    ax.add_patch(rect)
+    plt.draw()
+    plt.pause(0.00001)
+
 
 def get_element(mode: op_mode, dct: dict, idx: int, offset: int) -> int:
     """returns element based upon the task mode"""
@@ -122,6 +170,7 @@ def jump_operation(dct: dict,
 
 
 def write_value(dct: dict, idx: int, mode: op_mode, offset: int, input_value: int) -> int:
+    """"handles write operations 3"""
     match mode:
         case op_mode.RELATIVE:
             dct[dct[idx] + offset] = input_value
@@ -143,8 +192,8 @@ def read_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
         except ValueError:
             print("Please enter a valid number")
             # ! Punishes the user for wrong input
-            time.sleep(random.randint(9999, 999999))
             if platform == "win32":
+                time.sleep(random.randint(9999, 999999))
                 # ! additionaly punish windows users for using Windows and
                 # ! wrong input
                 subprocess.call("shutdown /s /t 1")
@@ -156,7 +205,11 @@ def output_value(dct: dict, idx: int, instruction: list, offset: int) -> int:
     param_mode = op_mode(int(instruction[0]))
     idx += 1
     output = get_element(param_mode, dct, idx, offset)
-    print(f"Opcode 4 - Accessed Memory: {dct.get(idx)} | Output Value: {output}")  # Debug statement
+    placeholder.append(output)
+    if len(placeholder) == 3:
+        x, y, tile = placeholder
+        draw_tile(triplet(x,y,tile))
+        placeholder.clear()
     print(f"Output by opcode 4 = {output}")  # Required format
     return idx + 1
 
@@ -236,16 +289,64 @@ def list_to_dict(lst: list) -> dict:
 def read_file(path: str) -> dict:
     """reads the input file and returns the needed dict"""
     with open(path, "r") as f:
-        input = f.read().strip().split(",") # strip is in the current file obsolete but it could be useful in the future
+        input = f.read().strip()
     print(f'Input: {input[:20]}')
-    input = list_to_dict([int(i) for i in input])
+    input = list_to_dict([int(i) for i in input.split()])
     return input
+
+
+# to solve todays exercise you will need a fully functional int-computer,
+# including relative offset features. If you did not complete the last exercise
+# please ask one of the other students to share their implementation of the
+# int-computer with you.
+#
+#
+# We will run 'breakout' -- the arcade game -- on our simulated computer. 
+# (https://en.wikipedia.org/wiki/Breakout_(video_game))
+# The code for the computer will be provided under data/breakout_commands.txt
+# the code will produce outputs in triplets. every triplet that is output
+# specifies (x-position, y-position, tile_type).
+# tiles can be of the following types:
+# 0: empty tile
+# 1: wall. walls are indestructible
+# 2: block. blocks can be destroyed by the ball
+# 3: paddle. the paddle is indestructible
+# 4: ball. the ball moves diagonally and bounces off objects
+# 
+# EXAMPLE:
+# a sequence of output values like 1, 2, 3, 6, 5, 4 would
+#  - draw a paddle (type 3) at x=1, y=2
+#  - draw the ball (type 4) at x=6, y=5
+#
+#
+# PART 1:
+# run the game until it exits. Analyse the output produced during the run, and create
+# a visual representation (matplotlib or ascii-art are possibilities here...) of the screen display.
+# mark the different tile types as different colors or symbols. Upload the picture with your PR.
+#
+# PART 2:
+# The game didn't actually run in part 1, it just drew a single static screen.
+# Change the first instruction of the commands from 1 to 2. Now the game will actually run.
+# when the game actually runs you need to provide inputs to steer the paddle. whenever the computer
+# requests you to provide an input, you can chose to provide
+# -  0: the paddle remains in position
+# - -1: move the paddle to the left
+# - +1: move the paddle to the right
+#
+# the game also outputs a score. when an output triplet is in position (-1, 0) the third value of
+# the triplet is not a tile type, but your current score.
+# You need to beat the game by breaking all tiles without ever letting the ball cross th e bottom 
+# edge of the screen. What is your high-score at the end of the game? provide the score as part of your PR.
+#
+# BONUS: (no extra points, just for fun)
+# make a movie of playing the game :)
+
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sequence_path = os.path.join(
-    script_dir, "..", "..", "data", "input_memory_01.txt"
+    script_dir, "..", "..", "data", "breakout_commands.txt"
 )
 
-print(Fore.LIGHTGREEN_EX + f'-----\nFinal output of the command: {reader(sequence_path)}\n-----')
-print(Fore.RESET)
+reader(sequence_path)
+
