@@ -29,25 +29,25 @@ def simulateComputer (memory):
     pointer = 0
     while True:
         opcode = memory[pointer]
-        #I have decided against using an if-else structure here, but in this case, it would have served the same purpose as a match-case.
+        # I have decided against using an if-else structure here, but in this case, it would have served the same purpose as a match-case.
         match opcode:
             case 99:
-                #Programm endet
+                # Programm endet
                 break
             case 1:
-                #Addition
+                # Addition
                 firstAddend = memory[pointer + 1]
                 secondAddend = memory[pointer + 2]
                 resultPosition = memory[pointer + 3]
                 memory[resultPosition] = memory[firstAddend] + memory[secondAddend]
             case 2:
-                #Multiplication
+                # Multiplication
                 firstFactor = memory[pointer + 1]
                 secondFactor = memory[pointer + 2]
                 resultPosition = memory[pointer + 3]
                 memory[resultPosition] = memory[firstFactor] * memory[secondFactor]
             case _:
-                #opced != 1,2 or 99
+                # opced != 1,2 or 99
                 raise ValueError(f"Invalid opcode {opcode} at position {pointer}")
                 # ValueError definition: Raised when an operation or function receives an argument that has the right type but an inappropriate value [...]
         pointer += 4
@@ -56,8 +56,8 @@ def simulateComputer (memory):
 # print out which value is returned by your function for the following list:
 commands = [1, 12, 2, 3, 1, 1, 2, 3, 1, 3, 4, 3, 1, 5, 0, 3, 2, 1, 9, 19, 1, 5, 19, 23, 1, 6, 23, 27, 1, 27, 10, 31, 1, 31, 5, 35, 2, 10, 35, 39, 1, 9, 39, 43, 1, 43, 5, 47, 1, 47, 6, 51, 2, 51, 6, 55, 1, 13, 55, 59, 2, 6, 59, 63, 1, 63, 5, 67, 2, 10, 67, 71, 1, 9, 71, 75, 1, 75, 13, 79, 1, 10, 79, 83, 2, 83, 13, 87, 1, 87, 6, 91, 1, 5, 91, 95, 2, 95, 9, 99, 1, 5, 99, 103, 1, 103, 6, 107, 2, 107, 13, 111, 1, 111, 10, 115, 2, 10, 115, 119, 1, 9, 119, 123, 1, 123, 9, 127, 1, 13, 127, 131, 2, 10, 131, 135, 1, 135, 5, 139, 1, 2, 139, 143, 1, 143, 5, 0, 99, 2, 0, 14, 0]
 
-#print(simulateComputer([1, 1, 1, 4, 99, 5, 6, 0, 99])) #test one
-#print(simulateComputer([20, 1, 1, 4, 99, 5, 6, 0, 99])) #Trigger for ValueError
+# print(simulateComputer([1, 1, 1, 4, 99, 5, 6, 0, 99])) #test one
+# print(simulateComputer([20, 1, 1, 4, 99, 5, 6, 0, 99])) #Trigger for ValueError
 print(simulateComputer(commands),"\n")
 
 ###########################################
@@ -76,7 +76,7 @@ def categorizeArguments(*args):
 
     for arg in args:
         try:
-            float(arg) #can interprete "123","5.5","-58" and "1e8" as an number
+            float(arg) # can interprete "123","5.5","-58" and "1e8" as an number
             numbers.append(arg)
         except ValueError:
             # If a ValueError is raised, it means the string could not be converted to a float,
@@ -87,12 +87,12 @@ def categorizeArguments(*args):
 
 # Test cases
 print(categorizeArguments("123", "abc", "two", "a", "!", "123abc"))
-#Output: (['123'], ['a', '!'])
-#"abc, two, 123abc are not sorted in any of this lists, because they are neither a number or a string which contain just one character"
+# Output: (['123'], ['a', '!'])
+# "abc, two, 123abc are not sorted in any of this lists, because they are neither a number or a string which contain just one character"
 print(categorizeArguments("x", "y", "z", "99", "5.5", "1e5"))
-#Output: (['99', '5.5', '1e5'], ['x', 'y', 'z'])
-#"1e5 is the scientific notation for a number, so it is correctly sorted in the numerical list. However, if it appears as a random string,
+# Output: (['99', '5.5', '1e5'], ['x', 'y', 'z'])
+# "1e5 is the scientific notation for a number, so it is correctly sorted in the numerical list. However, if it appears as a random string,
 # it could be mistakenly categorized as a number, even though 1e5 does not always represent a numerical value."
 print(categorizeArguments("O", "0", "#", "_", "abc123", "-9368"))
-#Output: (['0'], ['O', '#', '_'])
-#"abc123 is not sorted in any of this lists, because it is neither a number or a string which contain just one character"
+# Output: (['0', '-9368'], ['O', '#', '_'])
+# "abc123 is not sorted in any of this lists, because it is neither a number or a string which contain just one character"
