@@ -36,9 +36,6 @@ def parse_instruction(instruction):
     Parses an instruction into opcode and parameter modes.
     - The last two digits represent the opcode (e.g., 1 for addition, 2 for multiplication).
     - The other digits represent parameter modes, in order:
-        Mode 0: Position mode (treat parameter as a memory address)
-        Mode 1: Immediate mode (treat parameter as a literal value)
-        Mode 2: Relative mode (treat parameter as an offset from the relative base)
     """
     opcode = instruction % 100  # Extract the last two digits
     modes = [(instruction // 10 ** i) % 10 for i in range(2, 5)]
