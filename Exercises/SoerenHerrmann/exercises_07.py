@@ -67,6 +67,7 @@ class operations(enum.Enum):
     CHANGE_RELATIVE_OFFSET = 9
     HALT = 99
 
+
 class tiles(enum.Enum):
     EMPTY = 0
     WALL = 1
@@ -77,22 +78,25 @@ class tiles(enum.Enum):
 # * My first programming language was Java, so there is always a voice in my head calling for classes, enums, etc.
 # * I am sorry for the overengineering, but I had to do it.
 # * I hope you can forgive me for this.
+
+
 class triplet():
     def __init__(self, x: int, y: int, info: int) -> None:
         self.x = int(x) 
         self.y = int(y)
         self.info = info
 
-triplet_lst = []
-placeholder = []
 
-    # Initialize the plot
+placeholder = []
+score = 0
+
+# Initialize the plot
 fig, ax = plt.subplots()
 ax.set_aspect('equal')
 ax.set_xlim(0, 43)
 ax.set_ylim(0, 30)
 
-    # Define colors for each tile type
+# Define colors for each tile type
 colors = {
     tiles.EMPTY: 'white',
     tiles.WALL: 'black',
@@ -100,7 +104,7 @@ colors = {
     tiles.PADDLE: 'green',
     tiles.BALL: 'red'
 }
-score = 0
+
 
 def draw_tile(trplt: triplet):
     global score
@@ -342,11 +346,9 @@ def read_file(path: str) -> dict:
 # make a movie of playing the game :)
 
 
-
 script_dir = os.path.dirname(os.path.abspath(__file__))
 sequence_path = os.path.join(
     script_dir, "..", "..", "data", "breakout_commands.txt"
 )
 
 reader(sequence_path)
-
