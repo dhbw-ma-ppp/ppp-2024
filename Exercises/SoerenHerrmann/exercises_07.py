@@ -79,7 +79,6 @@ class tiles(enum.Enum):
 # * I am sorry for the overengineering, but I had to do it.
 # * I hope you can forgive me for this.
 
-
 class triplet():
     def __init__(self, x: int, y: int, info: int) -> None:
         self.x = int(x) 
@@ -93,14 +92,14 @@ score = 0
 # Initialize the plot
 fig, ax = plt.subplots()
 ax.set_aspect('equal')
-ax.set_xlim(0, 43)
-ax.set_ylim(0, 30)
+ax.set_xlim(43, 0)
+ax.set_ylim(30, 0)
 
 # Define colors for each tile type
 colors = {
-    tiles.EMPTY: 'white',
-    tiles.WALL: 'black',
-    tiles.BLOCK: 'blue',
+    tiles.EMPTY: 'black',
+    tiles.WALL: 'blue',
+    tiles.BLOCK: 'red',
     tiles.PADDLE: 'green',
     tiles.BALL: 'red'
 }
