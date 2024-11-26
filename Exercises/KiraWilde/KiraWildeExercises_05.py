@@ -15,6 +15,8 @@
 # Find the first number in this list which can not be expressed as a
 # sum of two numbers out of the 25 numbers before it.
 # Please make not of your result in the PR.
+from itertools import combinations
+
 
 def find_invalid_number_in_sequence(sequence, compare_lenght):
     for i in range(compare_lenght, len(sequence)):
@@ -26,22 +28,13 @@ def find_invalid_number_in_sequence(sequence, compare_lenght):
         #
         # This was my first solution, but it is difficult to read, so here is a more understandable version:
         '''
-        is_sum_found = False
-        for x in range(compare_lenght):
-            for y in range(x + 1, compare_lenght):
-                if (current_number == preceding_elements[x] + preceding_elements[y]):
-                    is_sum_found = True
-                    break
-            if is_sum_found:
-                break
-        if not is_sum_found:
+        if not any(a + b == current_number for a, b in combinations(preceding_elements, 2)):
             return current_number
     return None
-  
+
+
 with open("data/input_sequence.txt", "r") as file:
     sequence = [int(line.strip()) for line in file.readlines()]
-
-
 sequence_test = [35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576]
 lenght = 25
 invalid_number_in_sequence = find_invalid_number_in_sequence(sequence, lenght)
