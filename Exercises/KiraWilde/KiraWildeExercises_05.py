@@ -17,7 +17,7 @@
 # Please make not of your result in the PR.
 
 def find_invalid_number_in_sequence(sequence, compare_lenght):
-    for i in range(compare_lenght,len(sequence)):
+    for i in range(compare_lenght, len(sequence)):
         preceding_elements = sequence[i - compare_lenght:i]
         current_number = sequence[i]
         '''
@@ -40,6 +40,7 @@ def find_invalid_number_in_sequence(sequence, compare_lenght):
   
 with open("data/input_sequence.txt", "r") as file:
     sequence = [int(line.strip()) for line in file.readlines()]
+
 
 sequence_test = [35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299, 277, 309, 576]
 lenght = 25
@@ -89,14 +90,16 @@ def parse_input(filename):
                 number, color = bag.split(" ", 1)
                 contents.append((int(number), color.rsplit(" ", 1)[0]))
             rules[outer_bag] = contents
-    #print("Parsed rules:", rules)
+    # print("Parsed rules:", rules)
     return rules
+
 
 def count_bags(rules, bag):
     total = 0
     for count, inner_bag in rules.get(bag, []):
         total += count + count * count_bags(rules, inner_bag)
     return total
+
 
 def solve(filename):
     rules = parse_input(filename)
@@ -105,4 +108,4 @@ def solve(filename):
 
 # Example usage
 print(solve("data/input_bags.txt"))
-#result 6260
+# result 6260
