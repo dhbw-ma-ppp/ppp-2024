@@ -32,31 +32,44 @@ from collections import defaultdict
 
 
 def parse_instruction(instruction):
+    """
+    Parses an instruction into opcode and parameter modes.
+    - The last two digits represent the opcode (e.g., 1 for addition, 2 for multiplication).
+    - The other digits represent parameter modes, in order:
+        Mode 0: Position mode (treat parameter as a memory address)
+        Mode 1: Immediate mode (treat parameter as a literal value)
+        Mode 2: Relative mode (treat parameter as an offset from the relative base)
+    """
     opcode = instruction % 100  # Extract the last two digits
     modes = [(instruction // 10 ** i) % 10 for i in range(2, 5)]
     return opcode, modes
 
 
 def intcode_computer(memory):
-    memory = defaultdict(int, enumerate(memory))
-    relative_base = 0
-    i = 0
-    output = None
+    """
+    Simulates the Intcode computer.
+    - Memory is initialized from the input list and expanded as needed using defaultdict.
+    - Executes instructions in a loop until encountering opcode 99 (halt).
+    """
+    memory = defaultdict(int, enumerate(memory)) # Convert the memory list into a defaultdict
+    relative_base = 0 # Tracks the relative base for mode 2 operations
+    i = 0 # Instruction pointer
+    output = None # Holds the last output value
 
     def get_value(param, mode):
-        if mode == 0:
+        if mode == 0: # Position mode
             return memory[param]
-        elif mode == 1:
+        elif mode == 1: # Immediate mode
             return param
-        elif mode == 2:
+        elif mode == 2: # Relative mode
             return memory[relative_base + param]
         else:
             raise ValueError(f"Invalid parameter mode: {mode}")
 
     def write_value(param, mode, value):
-        if mode == 0:
+        if mode == 0: # Position mode
             memory[param] = value
-        elif mode == 2:
+        elif mode == 2: # Relative mode
             memory[relative_base + param] = value
         else:
             raise ValueError(f"Invalid parameter mode for writing: {mode}")
@@ -69,12 +82,12 @@ def intcode_computer(memory):
         if opcode == 99:
             break
 
-        elif opcode == 1:
+        elif opcode == 1:  # Addition
             param1, param2, param3 = memory[i + 1], memory[i + 2], memory[i + 3]
             write_value(param3, mode3, get_value(param1, mode1) + get_value(param2, mode2))
             i += 4
 
-        elif opcode == 2:
+        elif opcode == 2:  # Multiplication
             param1, param2, param3 = memory[i + 1], memory[i + 2], memory[i + 3]
             write_value(param3, mode3, get_value(param1, mode1) * get_value(param2, mode2))
             i += 4
@@ -91,31 +104,31 @@ def intcode_computer(memory):
             print(f"Output: {output}")
             i += 2
 
-        elif opcode == 5:
+        elif opcode == 5:  # Jump-if-true
             param1, param2 = memory[i + 1], memory[i + 2]
             if get_value(param1, mode1) != 0:
                 i = get_value(param2, mode2)
             else:
                 i += 3
 
-        elif opcode == 6:
+        elif opcode == 6:  # Jump-if-false
             param1, param2 = memory[i + 1], memory[i + 2]
             if get_value(param1, mode1) == 0:
                 i = get_value(param2, mode2)
             else:
                 i += 3
 
-        elif opcode == 7:
+        elif opcode == 7:  # Less than
             param1, param2, param3 = memory[i + 1], memory[i + 2], memory[i + 3]
             write_value(param3, mode3, 1 if get_value(param1, mode1) < get_value(param2, mode2) else 0)
             i += 4
 
-        elif opcode == 8:
+        elif opcode == 8:  # Equals
             param1, param2, param3 = memory[i + 1], memory[i + 2], memory[i + 3]
             write_value(param3, mode3, 1 if get_value(param1, mode1) == get_value(param2, mode2) else 0)
             i += 4
 
-        elif opcode == 9:
+        elif opcode == 9:  # Adjust relative base
             param1 = memory[i + 1]
             relative_base += get_value(param1, mode1)
             i += 2
@@ -126,10 +139,13 @@ def intcode_computer(memory):
     return output
 
 def load_memory_from_file(file_path):
+    """
+    Reads a file containing a comma-separated list of integers and returns it as a list.
+    """
     with open(file_path, 'r') as file:
         return list(map(int, file.read().strip().split(',')))
 
-# Define the relative path to the input file 
+# Determine the path to the input file (assumes file is in the same directory as this script)
 current_dir = os.path.dirname(__file__)
 data_file_path = os.path.join(current_dir, 'InputMemory.txt')
 
