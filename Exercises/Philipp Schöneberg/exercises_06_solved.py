@@ -1,4 +1,5 @@
 import operator
+from typing import Iterable
 from collections import defaultdict
 
 # For this weeeks exercise you again need to add a feature to your existing simulated computer:
@@ -30,8 +31,7 @@ from collections import defaultdict
 
 class commandsIterator:
     def __init__(self):
-        self.input_file: str
-        self.input_file = "input_memory_01.txt"
+        self.input_file: str = "input_memory_01.txt"
 
     def __iter__(self):
         with open(self.input_file, "r") as f:
@@ -44,15 +44,15 @@ class commandsIterator:
                         pass
 
 
-def compute(commands_iterable: object) -> int:
+def compute(commands_iterable: Iterable[int]) -> int:
     """
     This function takes as input an iterator of integers and returns a single
     integer number. The numbers passed as argument form the working memory of
     a simulated computer. This computer will start by looking at the first
     value in the list passed to the function. This value will contain an `
-    opcode`. Valid opcodes are 1, 2, 3, 4, 5, 6, 7, 8 or 99. Encountering any
-    other value when expecting an opcode or a lengthwise unfitting list will
-    raise an RuntimeError. The meaning of opcodes is as follows:
+    opcode`. Valid opcodes are 1, 2, 3, 4, 5, 6, 7, 8, 9 or 99. Encountering
+    any other value when expecting an opcode or a lengthwise unfitting list
+    will raise an RuntimeError. The meaning of opcodes is as follows:
     - 1 indicates addition. The function will read values from the next two
     positions of your working memory, add them, and store the result in the
     third position of your working memory. The three numbers immediately after
@@ -71,7 +71,11 @@ def compute(commands_iterable: object) -> int:
     it stores 1 in the position given by the third parameter. Otherwise, it
     stores 0.
     - 8: equals: if the first parameter is equal to the second parameter, it
-    stores 1 in the position given by the third parameter. Otherwise, it stores 0.
+    stores 1 in the position given by the third parameter. Otherwise, it
+    stores 0.
+    - 9: adjusts the relative offset by the value of its only parameter. the
+    offset increases by the value of the parameter (or decreases if the
+    parameter value is negative).
     - 99 indicates halt. the program should stop after encountering the opcode 99.\n
     After the program stops, the function should return the value in the first
     location (address 0) of your working memory.
@@ -86,26 +90,26 @@ def compute(commands_iterable: object) -> int:
         if index >= 0:
             return commands[index]
         else:
-            raise RuntimeError("The index can't be negative.")
+            raise IndexError("The index can't be negative.")
 
-    def get_opcode() -> None:
+    def get_opcode(extended_opcode, opcode) -> None:
         """
         This function calculates the opcode needed to compute the next
         instruction.
         """
-        nonlocal extended_opcode, opcode
-
         extended_opcode = get_command(instruction_pointer)
         opcode = extended_opcode % 100
         extended_opcode = extended_opcode // 100
+        return extended_opcode, opcode
 
-    def get_indices_and_parameter(parameter_amount: int) -> None:
+    def get_indices_and_parameter(parameter_amount: int, extended_opcode) -> None:
         """
         This function takes as input an integer representing the number of
         parameters needed for the next operation. It then calculates the
         corresponding indices and parameters.
         """
-        nonlocal extended_opcode
+        parameter: dict[int, int] = {}
+        indices: dict[int, int] = {}
         for i in range(0, parameter_amount):
             indices[i] = get_command(instruction_pointer+i+1)
             if extended_opcode % 10 == 1:
@@ -116,12 +120,10 @@ def compute(commands_iterable: object) -> int:
             else:
                 parameter[i] = get_command(indices[i])
             extended_opcode = extended_opcode // 10
+        return indices[parameter_amount-1], parameter
 
     commands: defaultdict[int, int] = defaultdict(int)
     operations_with_three_parameters: dict[int, object]
-    operations_with_two_parameters: dict[int, object]
-    parameter: dict[int, int] = {}
-    indices: dict[int, int] = {}
     instruction_pointer: int = 0
     relative_offset: int = 0
     extended_opcode: int = 0
@@ -132,41 +134,39 @@ def compute(commands_iterable: object) -> int:
     operations_with_three_parameters = {
         1: operator.add,
         2: operator.mul,
-        7: lambda x, y: 1 if x < y else 0,
-        8: lambda x, y: 1 if x == y else 0,
-    }
-    operations_with_two_parameters = {
         5: lambda x, y: y if x != 0 else instruction_pointer+3,
         6: lambda x, y: y if x == 0 else instruction_pointer+3,
+        7: lambda x, y: 1 if x < y else 0,
+        8: lambda x, y: 1 if x == y else 0,
     }
 
     while True:
         try:
-            get_opcode()
+            extended_opcode, opcode = get_opcode(extended_opcode, opcode)
             match opcode:
                 case 1 | 2 | 7 | 8:
-                    get_indices_and_parameter(3)
-                    commands[indices[2]] = operations_with_three_parameters[opcode](parameter[0], parameter[1])
+                    index, parameter = get_indices_and_parameter(3, extended_opcode)
+                    commands[index] = operations_with_three_parameters[opcode](parameter[0], parameter[1])
                     instruction_pointer += 4
                 case 3:
-                    get_indices_and_parameter(1)
+                    index, parameter = get_indices_and_parameter(1, extended_opcode)
                     while True:
                         try:
                             user_input = int(input("Enter an integer: "))
                             break
                         except ValueError:
                             print("The given input was not an integer.")
-                    commands[indices[0]] = user_input
+                    commands[index] = user_input
                     instruction_pointer += 2
                 case 4:
-                    get_indices_and_parameter(1)
-                    print(f"The value at index {indices[0]} is {parameter[0]}.")
+                    index, parameter = get_indices_and_parameter(1, extended_opcode)
+                    print(f"The value at index {index} is {parameter[0]}.")
                     instruction_pointer += 2
                 case 5 | 6:
-                    get_indices_and_parameter(2)
-                    instruction_pointer = operations_with_two_parameters[opcode](parameter[0], parameter[1])
+                    index, parameter = get_indices_and_parameter(2, extended_opcode)
+                    instruction_pointer = operations_with_three_parameters[opcode](parameter[0], parameter[1])
                 case 9:
-                    get_indices_and_parameter(1)
+                    index, parameter = get_indices_and_parameter(1, extended_opcode)
                     relative_offset += parameter[0]
                     instruction_pointer += 2
                 case 99:
@@ -192,4 +192,4 @@ print(compute([3, 3, 1105, -1, 9, 1101, 0, 0, 12, 4, 12, 99, 1]))   # Test funct
 
 print(compute([109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]))
 
-compute(commandsIterator())
+compute(commandsIterator())                                         # Function requiring 2 as input.
