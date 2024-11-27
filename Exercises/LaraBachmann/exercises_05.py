@@ -52,7 +52,7 @@ lst = [35, 20, 15, 25, 47, 40, 62, 55, 65, 95, 102, 117, 150, 182, 127, 219, 299
 find_first_invalid_number(lst, 5) # First invalid number: 127
 
 # ACTUAL input
-numbers = read_numbers_from_file('data/input_sequence.txt')
+numbers = read_numbers_from_file('/Users/larabachmann/Desktop/School/Programming_and_Problemsolving_Python/ppp-2024/data/input_sequence.txt')
 find_first_invalid_number(numbers, 25) # First invalid number: 1639024365
 
 # PART 2:
@@ -119,6 +119,6 @@ def count_bags(bags, bag_type):
     return total_count
 
 # Read the rules defining which bags are inside other bags and calculate for 'shiny gold'
-bags = read_bags_from_file('data/input_bags.txt')
+bags = read_bags_from_file('/Users/larabachmann/Desktop/School/Programming_and_Problemsolving_Python/ppp-2024/data/input_bags.txt')
 result = count_bags(bags, 'shiny gold')
 print(f'Total bags inside "shiny gold" bag: {result}') # bags inside 'shiny gold' bag: 6260
