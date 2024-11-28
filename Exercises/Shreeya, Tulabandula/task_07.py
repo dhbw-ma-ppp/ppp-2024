@@ -154,6 +154,7 @@ class BreakoutGame:
 
         for (x, y), tile_type in self.grid.items():
             grid_array[y, x] = tile_type
+
         return grid_array
 
 
