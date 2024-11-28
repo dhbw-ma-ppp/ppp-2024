@@ -123,7 +123,7 @@ class BreakoutGame:
                 grid[y][x] = tile_id 
 
        
-        plt.imshow(grid, cmap=custom_cmap, interpolation='nearest', origin="upper") #Each number in the gris is replaced with it's corresponding color from the custom color map, interploation nearest removes any spaces between neighbouring blocks 
+        plt.imshow(grid, cmap=custom_cmap)# colors the values of the grid based on the custom color map 
         plt.title(f"Breakout Game - Score: {self.score}")
         plt.axis('off')  # Turn off axis for cleaner view
         plt.tight_layout(pad=5)
