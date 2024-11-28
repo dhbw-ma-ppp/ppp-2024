@@ -88,8 +88,7 @@ class BreakoutGame:
             raise ValueError("No screen data to display")
 
         
-        plt.clf() #without clf mpl would keep layering plots on top of each other making the game really slow, 
-                  #it clears the figure without actually deleting it like close would so it can be reused. 
+        plt.clf() #without clf mpl would keep layering plots on top of each other making the game really slow, it clears the figure without actually deleting it like close would so it can be reused. 
         
         # Create the game grid
         max_x = max(x for x, _ in self.screen.keys())
@@ -124,8 +123,7 @@ class BreakoutGame:
                 grid[y][x] = tile_id 
 
        
-        plt.imshow(grid, cmap=custom_cmap, interpolation='nearest', origin="upper") #Each number in the gris is replaced with it's corresponding color from the custom color map, 
-                                                                                    #interploation nearest removes any spaces between neighbouring blocks 
+        plt.imshow(grid, cmap=custom_cmap, interpolation='nearest', origin="upper") #Each number in the gris is replaced with it's corresponding color from the custom color map, interploation nearest removes any spaces between neighbouring blocks 
         plt.title(f"Breakout Game - Score: {self.score}")
         plt.axis('off')  # Turn off axis for cleaner view
         plt.tight_layout(pad=5)
