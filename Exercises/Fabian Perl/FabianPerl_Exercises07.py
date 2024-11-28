@@ -79,7 +79,6 @@ def render_img(results):
     
     time.sleep(0.02)      
     sys.stdout.write(frame)                #sys.stdout to stop flickering of animation 
-    sys.stdout.flush()
         
 def process_output(output_raw, output_pixel):
     
