@@ -54,7 +54,7 @@ from time import sleep
 class GameManager():
     empty_tile = Fore.BLACK + "   " + Style.RESET_ALL
     block_colors = [Fore.LIGHTRED_EX, Fore.LIGHTGREEN_EX, Fore.CYAN]
-    block_strings = ["███"]
+    block_strings = ["\u2588\u2588\u2588"]
     def __init__(self) -> None:
         self.board = [[self.empty_tile]]
         self.x_max = 0
@@ -91,16 +91,16 @@ class GameManager():
             case 0: # empty tile
                 tile = self.empty_tile
             case 1: # wall
-                tile = Fore.WHITE + "███" + Style.RESET_ALL
+                tile = Fore.WHITE + "\u2588\u2588\u2588" + Style.RESET_ALL
             case 2: # block
                 color = self.block_colors[randint(0, len(self.block_colors)-1)]
                 block = self.block_strings[randint(0, len(self.block_strings)-1)]
                 tile = color + block + Style.RESET_ALL
             case 3: # paddle
-                tile = Fore.MAGENTA + "███" + Style.RESET_ALL
+                tile = Fore.MAGENTA + "\u2588\u2588\u2588" + Style.RESET_ALL
                 self.paddle_x_pos = triplet[0]
             case 4: # ball
-                tile = Fore.YELLOW + " ● " + Style.RESET_ALL
+                tile = Fore.YELLOW + " \u25cf " + Style.RESET_ALL
                 self.ball_x_pos = triplet[0]
             case _:
                 return
