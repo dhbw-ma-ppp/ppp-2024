@@ -106,6 +106,7 @@ colors = {
 
 
 def draw_tile(trplt: triplet):
+    """Draws a tile on the plot"""
     global score
     print(trplt.x, trplt.y, trplt.info)
     if trplt.x == -1 and trplt.y == 0:
@@ -133,11 +134,9 @@ def calc(dct: dict, idx: int, op: operations, instruction: list, offset: int) ->
     """calc is short for calculator. Handles 1,2,7 and 8"""
     param_one_mode = op_mode(int(instruction[0]))
     param_two_mode = op_mode(int(instruction[1]))
-    idx += 1 
-    param_one = get_element(param_one_mode, dct, idx, offset)
-    idx += 1
-    param_two = get_element(param_two_mode, dct, idx, offset)
-    idx += 1
+    param_one = get_element(param_one_mode, dct, idx + 1, offset)
+    param_two = get_element(param_two_mode, dct, idx + 2, offset)
+    idx += 3
     write_mode = op_mode(int(instruction[2]))
     destination = dct.get(idx, 0) + (offset if write_mode == op_mode.RELATIVE else 0)
     match op:
@@ -162,15 +161,11 @@ def jump_operation(dct: dict,
     param_one_mode = op_mode(int(instruction[0]))
     param_two_mode = op_mode(int(instruction[1]))
 
-    idx += 1
-    param_one = get_element(param_one_mode, dct, idx, offset)
-    idx += 1
-    param_two = get_element(param_two_mode, dct, idx, offset)
-
+    param_one = get_element(param_one_mode, dct, idx + 1, offset)
+    param_two = get_element(param_two_mode, dct, idx + 2, offset)
     if (op == operations.JUMP_IF_TRUE and param_one != 0) or (op == operations.JUMP_IF_FALSE and param_one == 0):
         return param_two
-    return idx + 1
-
+    return idx + 3
 
 def write_value(dct: dict, idx: int, mode: op_mode, offset: int, input_value: int) -> int:
     """"handles write operations 3"""
@@ -228,6 +223,7 @@ def change_offset(offset: int, instruction: list, dct: dict, idx: int) -> int:
 
 def check_for_opcode(idx: int, dct: dict, offset: int = 0):
     operation = str(dct[idx])
+    """checks for the opcode and executes the operation"""
     while len(operation) < 6:
         operation = '0' + operation
     try:
