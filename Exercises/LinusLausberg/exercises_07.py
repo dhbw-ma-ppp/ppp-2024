@@ -76,26 +76,16 @@ def investigation(playing_mode):
             second_parameter = 0
         end = False
         match opcode:
-            case '01':
-                start = addition(start, first_parameter, second_parameter, third_parameter)
-            case '02':
-                start = multiplication(start, first_parameter, second_parameter, third_parameter)
-            case '03':
-                start = inputs(start, first_parameter, picture_data, score, playing_mode)
-            case '04':
-                start, element_data, picture_data, score = output(start, first_parameter, element_data, picture_data, score)
-            case '05':
-                start = jump_if_true(start, first_parameter, second_parameter)
-            case '06':
-                start = jump_if_false(start, first_parameter, second_parameter)
-            case '07':
-                start = less_than(start, first_parameter, second_parameter, third_parameter)
-            case '08':
-                start = equals(start, first_parameter, second_parameter, third_parameter)
-            case '09':
-                start, offset = relativ_offset(start, first_parameter, offset)
-            case '99':
-                end = True
+            case '01': start = addition(start, first_parameter, second_parameter, third_parameter)
+            case '02': start = multiplication(start, first_parameter, second_parameter, third_parameter)
+            case '03': start = inputs(start, first_parameter, picture_data, score, playing_mode)
+            case '04': start, element_data, picture_data, score = output(start, first_parameter, element_data, picture_data, score)
+            case '05': start = jump_if_true(start, first_parameter, second_parameter)
+            case '06': start = jump_if_false(start, first_parameter, second_parameter)
+            case '07': start = less_than(start, first_parameter, second_parameter, third_parameter)
+            case '08': start = equals(start, first_parameter, second_parameter, third_parameter)
+            case '09': start, offset = relativ_offset(start, first_parameter, offset)
+            case '99': end = True
     drawing(picture_data, score)
     plt.show()
 
@@ -212,21 +202,21 @@ def inputs(start, first_parameter, picture_data, score, playing_mode):
     return start + 2
 
 
-def output(start, first_parameter, elemet_data: list, picture_data: list, score):
+def output(start, first_parameter, element_data: list, picture_data: list, score):
     requested = working_dict[first_parameter]
-    elemet_data.append(requested)
-    if len(elemet_data) < 3:
+    element_data.append(requested)
+    if len(element_data) < 3:
         pass
-    elif elemet_data[0] == -1 and elemet_data[1] == 0 and len(elemet_data) == 3:
-        if score != elemet_data[2]:
-            score = elemet_data[2]
-            elemet_data.clear()
+    elif element_data[0] == -1 and element_data[1] == 0 and len(element_data) == 3:
+        if score != element_data[2]:
+            score = element_data[2]
+            element_data.clear()
     else:
-        elemet_data = tuple(elemet_data)
-        picture_data.append(elemet_data)
-        elemet_data = list(elemet_data)
-        elemet_data.clear()
-    return start + 2, elemet_data, picture_data, score
+        element_data = tuple(element_data)
+        picture_data.append(element_data)
+        element_data = list(element_data)
+        element_data.clear()
+    return start + 2, element_data, picture_data, score
 
 
 def jump_if_true(start, first_parameter, second_parameter):
@@ -282,9 +272,6 @@ def reading_input():
         working_dict[0] = 2
         print('1: Selberspielen\n2: Autoplay')
         playing_mode = input('Welchen Modus willst du:')
-        if playing_mode == 1:
-            pass
-
         return playing_mode
     return 0    
 
