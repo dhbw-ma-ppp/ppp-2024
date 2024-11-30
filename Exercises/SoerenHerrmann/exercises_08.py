@@ -7,7 +7,7 @@ sequence_path = os.path.join(
 )
 
 
-def read_input_sequence(file_path):
+def read_input_sequence(file_path: str) -> np.ndarray:
     """ Read the input sequence from a file and return it as a numpy array. """
     with open(file_path, 'r') as file:
         # Read the file line by line
@@ -18,9 +18,7 @@ def read_input_sequence(file_path):
     return matrix
 
 
-import concurrent.futures
-
-def minCost(cost):
+def minCost(cost: np.ndarray) -> int:
     """ Returns the minimum cost to reach the end of the cave using dynamic programming """
     m, n = cost.shape
     dp = np.zeros((m, n), dtype=int)
@@ -46,5 +44,5 @@ def test_path_finding():
     assert minCost(test_matrix) == 11
 
 
-cave = read_input_sequence(sequence_path)
+cave: np.array = read_input_sequence(sequence_path)
 print(minCost(cave))
