@@ -2,41 +2,41 @@
 
 import numpy as np
 
-# def initiate_array():
-#     with open("data/exercise_cave.txt", "r") as file:
-#         row = file.readlines()
-#         row_count = len(row)  # count rows
-#         print(f"Count of Row: {row_count}")
-
-#         columns = len(row[0].strip("\n"))  # count columns
-#         print(f"Count of Column: {columns}")
-
-#     arr = np.zeros((row_count, columns), dtype=int)
-
-#     for i, element in enumerate(row):
-#         arr[i] = np.array([int(x) for x in element.strip("\n")])
-
-#     return arr
-
 def initiate_array():
-    # Test-Array definieren
-    data = [
-        [1, 1, 6, 3, 7, 5, 1, 7, 4, 2],
-        [1, 3, 8, 1, 3, 7, 3, 6, 7, 2],
-        [2, 1, 3, 6, 5, 1, 1, 3, 2, 8],
-        [3, 6, 9, 4, 9, 3, 1, 5, 6, 9],
-        [7, 4, 6, 3, 4, 1, 7, 1, 1, 1],
-        [1, 3, 1, 9, 1, 2, 8, 1, 3, 7],
-        [1, 3, 5, 9, 9, 1, 2, 4, 2, 1],
-        [3, 1, 2, 5, 4, 2, 1, 6, 3, 9],
-        [1, 2, 9, 3, 1, 3, 8, 5, 2, 1],
-        [2, 3, 1, 1, 9, 4, 4, 5, 8, 1]
-    ]
+    with open("data/exercise_cave.txt", "r") as file:
+        row = file.readlines()
+        row_count = len(row)  # count rows
+        print(f"Count of Row: {row_count}")
 
-    # In ein NumPy-Array umwandeln
-    arr = np.array(data, dtype=int)
-    print(f"Array:\n{arr}")
+        columns = len(row[0].strip("\n"))  # count columns
+        print(f"Count of Column: {columns}")
+
+    arr = np.zeros((row_count, columns), dtype=int)
+
+    for i, element in enumerate(row):
+        arr[i] = np.array([int(x) for x in element.strip("\n")])
+
     return arr
+
+# def initiate_array():
+#     # Test-Array definieren
+#     data = [
+#         [1, 1, 6, 3, 7, 5, 1, 7, 4, 2],
+#         [1, 3, 8, 1, 3, 7, 3, 6, 7, 2],
+#         [2, 1, 3, 6, 5, 1, 1, 3, 2, 8],
+#         [3, 6, 9, 4, 9, 3, 1, 5, 6, 9],
+#         [7, 4, 6, 3, 4, 1, 7, 1, 1, 1],
+#         [1, 3, 1, 9, 1, 2, 8, 1, 3, 7],
+#         [1, 3, 5, 9, 9, 1, 2, 4, 2, 1],
+#         [3, 1, 2, 5, 4, 2, 1, 6, 3, 9],
+#         [1, 2, 9, 3, 1, 3, 8, 5, 2, 1],
+#         [2, 3, 1, 1, 9, 4, 4, 5, 8, 1]
+#     ]
+
+#     # In ein NumPy-Array umwandeln
+#     arr = np.array(data, dtype=int)
+#     print(f"Array:\n{arr}")
+#     return arr
 
 def check_values(arr, i, j, arr_path):
     rows, cols = arr.shape
@@ -59,11 +59,11 @@ def check_values(arr, i, j, arr_path):
         return i + 1, j
     
     else:
-        if j + 1 < cols:  # Wenn möglich, nach rechts gehen
+        if j + 1 < cols:  # right if possible
             arr_path.append(arr_right)
             return i, j + 1
         
-        elif i + 1 < rows:  # Wenn nicht, nach unten gehen
+        elif i + 1 < rows:  # down if possible
             arr_path.append(arr_down)
             return i + 1, j
 
@@ -81,8 +81,6 @@ def main():
     print(f"Sum: {sum(arr_path)}")
 
 main()
-
-#print(f'{arr.dtype.itemsize=}, {arr.dtype.byteorder=}, {arr.dtype.name=}')
 
 
 # - Prepare for next Friday by forming groups of 2 (4 with task splitting), and deciding on the rough outline of the analytical app you'd like to build. 
