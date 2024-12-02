@@ -48,9 +48,10 @@ import keyboard
 from PIL import Image
 import matplotlib.pyplot as plt
 
-with open("data/breakout_commands.txt") as file:
+with open(r"C:\Users\kevin.siess\Desktop\OneDrive (privat)\OneDrive\Dokumente\Studium\DHBW Mannheim\Modul\Python\Repo\ppp-2024\Exercises\Kevin Siess\breakout_commands.txt") as file:
     content = file.read()
     commands = [int(line) for line in content.splitlines()]
+    commands[0] = 2
 
 background_img = Image.open(r"C:\Users\kevin.siess\Desktop\OneDrive (privat)\OneDrive\Dokumente\Studium\DHBW Mannheim\Modul\Python\Repo\ppp-2024\Exercises\Kevin Siess\background_images.jpeg")
 old_tiles = {}
@@ -117,13 +118,15 @@ def update_game_display_partial(tiles, score):
 
         if tile_type == 1:  # Wall
             scatter = ax.scatter(x, y, c=color_map[tile_type], marker=marker_map["Wall"], s=300)
+
         elif tile_type == 2:  # Block
             color = get_row_color(y)
             scatter = ax.scatter(x, y, c=color, marker=marker_map["Block"], s=300)
+
         elif tile_type == 3:  # Player
             scatter = ax.scatter(x, y, c=color_map[tile_type], marker=marker_map["Player"], s=300)
-        elif tile_type == 4:  # Ball
-            
+
+        elif tile_type == 4:  # Ball          
             ball_scatter = ax.scatter(x, y, c=color_map[tile_type], marker=marker_map["Ball"], s=300)
             scatter = ball_scatter
 
@@ -180,6 +183,7 @@ def intcode_process(memory):    #initiate Computer
             case 99:  # end of program
                 print(f"Memory: {len(memory)}")
                 print(f"Highscore: {score}")
+
                 plt.ioff()
                 return outputs
 
@@ -227,6 +231,7 @@ def intcode_process(memory):    #initiate Computer
             case 4:  # output
                 value = check_mode(pos1, param_mode1, relative_offset)
                 outputs.append(value)
+
                 if len(outputs) == 3:
                     x, y, tile_type = outputs
                     if (x, y) == (-1, 0):
@@ -283,10 +288,5 @@ def intcode_process(memory):    #initiate Computer
 fig, ax = plt.subplots()
 initialize_game()
 result = intcode_process(commands.copy())
-
-# triplets as tiles
-for i in range(0, len(result), 3):
-    x, y, tile_type = result[i:i + 3]
-    tiles[(x, y)] = tile_type
 
 
