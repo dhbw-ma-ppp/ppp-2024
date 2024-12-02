@@ -104,16 +104,16 @@ def update_game_display_partial(tiles, score):
 
     to_add, to_remove = find_tile_differences(old_tiles, tiles)
 
-    # Entferne alte Tiles
+    # delete old tiles
     for position in to_remove:
         if position in tile_scatter:
                 tile_scatter[position].remove()
                 del tile_scatter[position]
 
-    # Füge neue Tiles hinzu
+    # new tiles
     for position, tile_type in to_add.items():
         x, y = position
-        scatter = None  # Initialisiere scatter
+        scatter = None
 
         if tile_type == 1:  # Wall
             scatter = ax.scatter(x, y, c=color_map[tile_type], marker=marker_map["Wall"], s=300)
@@ -210,7 +210,7 @@ def intcode_process(memory):    #initiate Computer
                 # else:
                 #     key_input = 0
 
-                # Automatische Steuerung
+                # auto-mode
                 key_input = 0
                 if ball_position and player_position:
                     ball_x, _ = ball_position
@@ -253,7 +253,7 @@ def intcode_process(memory):    #initiate Computer
             case 6:  # jump-if-false
                 if check_mode(pos1, param_mode1, relative_offset) == 0:
                     pointer = check_mode(pos2, param_mode2, relative_offset)
-                    
+
                 else:
                     pointer += 3
 
@@ -284,9 +284,12 @@ fig, ax = plt.subplots()
 initialize_game()
 result = intcode_process(commands.copy())
 
-# Triplets in Tiles konvertieren
+# triplets as tiles
 for i in range(0, len(result), 3):
     x, y, tile_type = result[i:i + 3]
     tiles[(x, y)] = tile_type
+
+
+
 
 
