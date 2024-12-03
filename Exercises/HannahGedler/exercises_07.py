@@ -240,7 +240,7 @@ def auto_play():
                     return 0
 
 def make_triplets():
-    #plt.show()
+    plt.show()
     output_list = []
     triplets_dict2 = {}
     stopit = False
@@ -251,8 +251,8 @@ def make_triplets():
                 triplets_dict2[(output_list[0], output_list[1])] = output_list[2]
                 if output_list[2] == 4:
                     paint(triplets_dict2)
-                    #plt.pause(0.1)
-                    #plt.close()
+                    plt.pause(0.1)
+                    plt.close()
                 if output_list[2] == 99:
                     stopit = True
                     break
