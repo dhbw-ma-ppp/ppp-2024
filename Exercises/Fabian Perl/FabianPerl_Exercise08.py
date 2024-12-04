@@ -1,5 +1,3 @@
-import random
-
 class Node:
     def __init__(self, id, value) -> None:
         self.id = id
