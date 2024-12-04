@@ -89,7 +89,7 @@ def dijkstra_algorithm(node_array):
             
     while len(rest) > 0:
 
-        K = random.choice(list(rest.items()))[1]        #choose random node in rest
+        K = rest[list(rest.keys())[0]]
           
         for node_index in rest:
             if rest[node_index].distance < K.distance:
