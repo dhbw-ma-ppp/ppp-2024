@@ -61,21 +61,20 @@ def intcode_process(memory):
 
     pointer = 0   # postion of pointer
 
-    def get_param():    #get position of opcode & mode
-        instr = str(memory[pointer]).zfill(5)
-        opcode = int(instr[-2:])
-        param_mode1 = int(instr[2])
-        param_mode2 = int(instr[1])
-        param_mode3 = int(instr[0])
+    def get_instruction(instruction):    #get position of opcode & mode
+        opcode = instruction % 100
+        param_mode1 = (instruction // 100) % 10
+        param_mode2 = (instruction // 1000) % 10
+        param_mode3 = (instruction // 10000) % 10
         return opcode, param_mode1, param_mode2, param_mode3
 
-    def pointer_position_update(pointer):   #update position of pointer
+    def get_pointer_position(pointer):   #update position of pointer
         pos1 = memory[pointer + 1] 
         pos2 = memory[pointer + 2] 
         pos3 = memory[pointer + 3] 
         return pos1, pos2, pos3
 
-    def get_mode(pos, mode):    #check for mode
+    def check_mode(pos, mode):    #check for mode
         if mode == 0:
             return memory[pos]
         else:
@@ -83,10 +82,12 @@ def intcode_process(memory):
 
     while True:
 
-        opcode, param_mode1, param_mode2, param_mode3 = get_param()
+        instruction = memory[pointer]
+
+        opcode, param_mode1, param_mode2, param_mode3 = get_instruction(instruction)
 
 
-        pos1, pos2, pos3 = pointer_position_update(pointer)
+        pos1, pos2, pos3 = get_pointer_position(pointer)
 
         match opcode:
 
@@ -94,11 +95,11 @@ def intcode_process(memory):
                 return memory
 
             case 1:  # +
-                memory[pos3] = get_mode(pos1, param_mode1) + get_mode(pos2, param_mode2)
+                memory[pos3] = check_mode(pos1, param_mode1) + check_mode(pos2, param_mode2)
                 pointer += 4
 
             case 2:  # *
-                memory[pos3] = get_mode(pos1, param_mode1) * get_mode(pos2, param_mode2)
+                memory[pos3] = check_mode(pos1, param_mode1) * check_mode(pos2, param_mode2)
                 pointer += 4
 
             case 3:  # input
@@ -106,27 +107,27 @@ def intcode_process(memory):
                 pointer += 2
 
             case 4:  # output
-                print(get_mode(pos1, param_mode1))
+                print(check_mode(pos1, param_mode1))
                 pointer += 2
 
             case 5:  # jumpf-if-!=0
-                if get_mode(pos1, param_mode1) != 0:
-                    pointer = get_mode(pos2, param_mode2)
+                if check_mode(pos1, param_mode1) != 0:
+                    pointer = check_mode(pos2, param_mode2)
                 else:
                     pointer += 3
 
             case 6:  # jumpf-if-==0
-                if get_mode(pos1, param_mode1) == 0:
-                    pointer = get_mode(pos2, param_mode2)
+                if check_mode(pos1, param_mode1) == 0:
+                    pointer = check_mode(pos2, param_mode2)
                 else:
                     pointer += 3
 
             case 7:  # <
-                memory[pos3] = 1 if get_mode(pos1, param_mode1) < get_mode(pos2, param_mode2) else 0
+                memory[pos3] = 1 if check_mode(pos1, param_mode1) < check_mode(pos2, param_mode2) else 0
                 pointer += 4
 
             case 8:  # ==
-                memory[pos3] = 1 if get_mode(pos1, param_mode1) == get_mode(pos2, param_mode2) else 0
+                memory[pos3] = 1 if check_mode(pos1, param_mode1) == check_mode(pos2, param_mode2) else 0
                 pointer += 4
 
             case _:  # Error
