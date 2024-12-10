@@ -1,6 +1,4 @@
-import numpy as np
 from collections import defaultdict
-
 
 # - Solve the exercise described at https://adventofcode.com/2021/day/15 using the data at `data/exercise_cave.txt` as input. Prepare a PR as usual.
 #
@@ -73,19 +71,16 @@ def dijkstra_search(risk_map_adjacency_list: dict[int, list[tuple]], start: tupl
     graph and returns the distance given by the weights of the links, as well
     as the list of nodes on the path from the starting node to the target node.
     """
-    def search(risk_map_adjacency_list: dict[int, list[tuple]], nodes_to_go: list[int], node: tuple[int, int]) -> list[int]:
+    def search(risk_map_adjacency_list: dict[int, list[tuple]], node: tuple[int, int]) -> list[int]:
         """
         Visits the givin node and fetches the dist_to, edge_to and visited
         dictionaries, as well as the nodes_to_go list.
         """
-        visited[node] = True
         for elem in risk_map_adjacency_list[node]:
-            if visited[elem] is False:
+            if elem in remains:
                 if dist_to[elem] > dist_to[node]+elem[1]:
                     dist_to[elem] = dist_to[node]+elem[1]
                     edge_to[elem] = node
-                nodes_to_go.append(elem)
-        return nodes_to_go
 
     def calculate_edges(edges: list[int], edge_to: dict[int, int], aim: tuple[int, int]) -> list[int]:
         """
@@ -97,20 +92,22 @@ def dijkstra_search(risk_map_adjacency_list: dict[int, list[tuple]], start: tupl
         edges.append(aim[1])
         return edges
 
-    dist_to: dict[tuple[int, int], int] = defaultdict(lambda: np.inf)
+    dist_to: dict[tuple[int, int], int] = defaultdict(lambda: float("inf"))
     edge_to: dict[tuple[int, int], tuple[int, int]] = defaultdict(lambda: None)
-    visited: dict[tuple[int, int], bool] = defaultdict(bool)
-    nodes_to_go: list[tuple[int, int]] = []
+    remains: set[tuple[int, int]] = set()
     edges: list[int] = []
 
     dist_to[start] = 0
-    nodes_to_go = search(risk_map_adjacency_list, nodes_to_go, start)
-    while nodes_to_go:
-        node = nodes_to_go.pop(0)
-        if visited[node] is False:
-            nodes_to_go = search(risk_map_adjacency_list, nodes_to_go, node)
-        if visited[aim] is True:
-            break
+    dist_to[aim]
+    for elem in risk_map_adjacency_list:
+        remains.add(elem)
+    while aim in remains:
+        minimum: tuple[int, int] = aim
+        for elem in remains:
+            if dist_to[elem] < dist_to[minimum]:
+                minimum = elem
+        search(risk_map_adjacency_list, minimum)
+        remains.remove(minimum)
     edges = calculate_edges(edges, edge_to, aim)
     return dist_to[aim], edges
 
@@ -134,8 +131,6 @@ distance: int
 edges: list[int]
 lines: int = len(risk_map_list)
 columns: int = len(risk_map_list[0])
-risk_map_adjacency_list: dict[int, list[tuple]]
-
-risk_map_adjacency_list = create_adjacency_list(risk_map_list)
+risk_map_adjacency_list: dict[int, list[tuple]] = create_adjacency_list(risk_map_list)
 distance, edges = dijkstra_search(risk_map_adjacency_list, (0, risk_map_list[0][0]), (len(risk_map_adjacency_list)-1, risk_map_list[lines-1][columns-1]))
 print(f"The best path contains a risk of {distance} and has a risk path as follows:\n{edges}.")
